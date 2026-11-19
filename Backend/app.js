@@ -26,6 +26,18 @@ app.use(cors(
     config.application.cors.server
 ));
 
+// rutas backend
+const drawerRoutes = require('./routes/drawer');
+const employeeRoutes = require('./routes/employee');
+const customerRoutes = require('./routes/customer');
+const productRoutes = require('./routes/product');
+const supplierRoutes = require('./routes/supplier');
+const orderRoutes = require('./routes/order');
+const receiptRoutes = require('./routes/receipt');
+const orderDetailRoutes = require('./routes/orderDetail');
+const complaintRoutes = require('./routes/complaint');
+const productSupplierRoutes = require('./routes/productSupplier');
+
 app.set('port', process.env.PORT || 3000);
 
 app.use(morgan('dev'));
@@ -43,6 +55,18 @@ app.use(express.urlencoded({ extended: false }));
 
 // procesar peticiones en formato JSON
 app.use(bodyParser.json());
+
+// enlazar cada ruta con su tabla
+app.use('/api/drawers', drawerRoutes);
+app.use('/api/employees', employeeRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/suppliers', supplierRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/receipts', receiptRoutes);
+app.use('/api/order-details', orderDetailRoutes);
+app.use('/api/complaints', complaintRoutes);
+app.use('/api/product-suppliers', productSupplierRoutes);
 
 // iniciar el servidor
 app.listen(app.get('port'), () => {
