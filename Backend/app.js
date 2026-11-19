@@ -17,6 +17,7 @@ app.use(cors({
 }));
 
 // rutas backend
+const authRoutes = require('./routes/auth');
 const drawerRoutes = require('./routes/drawer');
 const employeeRoutes = require('./routes/employee');
 const customerRoutes = require('./routes/customer');
@@ -50,6 +51,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // enlazar cada ruta con su tabla
+app.use('/api/auth', authRoutes);
 app.use('/api/drawers', drawerRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/customers', customerRoutes);
