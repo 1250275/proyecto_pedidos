@@ -1,0 +1,15 @@
+Comandos utilizados para crear el proyecto (terminal de Visual Studio Code)
+=========================================================================
+
+1. Inicializar el proyecto de Node (crea package.json)
+   npm init -y
+
+2. Instalar las dependencias
+   npm install express morgan mysql2 cors express-myconnection body-parser dotenv
+
+3. Instalar nodemon como dependencia de desarrollo
+   npm install -D nodemon
+
+4. Ejecutar el servidor
+   npm run dev      (con nodemon)
+   npm start        (sin nodemon)
