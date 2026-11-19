@@ -1,12 +1,7 @@
-const crypto = require('crypto');
-
 const controller = {};
 
-// Columnas públicas del empleado (nunca se devuelve la credencial)
+// Columnas del empleado (el acceso al sistema se maneja en la tabla usuarios)
 const publicColumns = 'id_empleado, nombre, apellidos, dni, email, cargo, fecha_ingreso, fecha_nacimiento';
-
-// Genera el hash SHA-256 de la credencial (equivale a SHA2(valor, 256) en MySQL)
-const hashCredential = (credential) => crypto.createHash('sha256').update(String(credential)).digest('hex');
 
 // Listar todos los registros
 controller.list = (req, res) => {
@@ -32,10 +27,9 @@ controller.edit = (req, res) => {
     });
 };
 
-// Insertar un registro (la credencial se guarda como hash)
+// Insertar un registro
 controller.save = (req, res) => {
-    const data = { ...req.body };
-    if (data.credencial) data.credencial = hashCredential(data.credencial);
+    const data = req.body;
     req.getConnection((error, conn) => {
         if (error) return res.status(500).json(error);
         conn.query('insert into empleado set ?', [data], (err, result) => {
@@ -45,15 +39,10 @@ controller.save = (req, res) => {
     });
 };
 
-// Actualizar un registro (si no se envía credencial, se conserva la actual)
+// Actualizar un registro
 controller.update = (req, res) => {
     const { id } = req.params;
-    const newEmployee = { ...req.body };
-    if (newEmployee.credencial) {
-        newEmployee.credencial = hashCredential(newEmployee.credencial);
-    } else {
-        delete newEmployee.credencial;
-    }
+    const newEmployee = req.body;
     req.getConnection((error, conn) => {
         if (error) return res.status(500).json(error);
         conn.query('update empleado set ? where id_empleado = ?', [newEmployee, id], (err, result) => {
