@@ -6,25 +6,15 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const myConnection = require('express-myconnection');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
-const config = {
-    application: {
-        cors: {
-            server: [
-                {
-                    origin: "localhost:3000",
-                    credentials: true
-                }
-            ]
-        }
-    }
-};
-
-app.use(cors(
-    config.application.cors.server
-));
+// CORS: se permite solo el frontend y con credenciales para que viaje la cookie del token
+app.use(cors({
+    origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+    credentials: true
+}));
 
 // rutas backend
 const drawerRoutes = require('./routes/drawer');
@@ -55,6 +45,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // procesar peticiones en formato JSON
 app.use(bodyParser.json());
+
+// leer las cookies (token de sesión)
+app.use(cookieParser());
 
 // enlazar cada ruta con su tabla
 app.use('/api/drawers', drawerRoutes);
