@@ -11,6 +11,8 @@ Backend en NodeJS (Express + MySQL) para la base de datos `bd_tienda`.
 
 ## Endpoints
 
+La documentación completa de cada endpoint (esquemas, ejemplos y respuestas) está en [Backend/documentation/API.md](Backend/documentation/API.md).
+
 Todas las rutas usan el mismo patrón:
 
 | Método | Ruta | Acción |
