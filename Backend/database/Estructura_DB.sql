@@ -8,6 +8,7 @@ CREATE DATABASE bd_tienda
   COLLATE utf8mb4_unicode_ci;
 
 USE bd_tienda;
+SET NAMES utf8mb4;
 
 -- ---------------------------------------------------------------------
 -- 1. GAVETA (caja registradora)
