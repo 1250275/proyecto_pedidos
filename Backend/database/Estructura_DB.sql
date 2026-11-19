@@ -29,7 +29,6 @@ CREATE TABLE empleado (
     dni                 VARCHAR(15)     NOT NULL,
     email               VARCHAR(100)    NOT NULL,
     cargo               VARCHAR(50)     NOT NULL,
-    credencial          VARCHAR(255)    NOT NULL,   -- guardar hash, no texto plano
     fecha_ingreso       DATE            NOT NULL,
     fecha_nacimiento    DATE            NOT NULL,
     CONSTRAINT pk_empleado PRIMARY KEY (id_empleado),
@@ -176,6 +175,28 @@ CREATE TABLE detalle_proveedores (
     CONSTRAINT fk_detprov_proveedor FOREIGN KEY (id_proveedor)
         REFERENCES proveedor (id_proveedor)
         ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+-- ---------------------------------------------------------------------
+-- 11. USUARIOS   (Empleado 1 ── 1 Usuario)
+--     Rol fijo (ENUM) validado también en el código (constants/roles.js)
+-- ---------------------------------------------------------------------
+CREATE TABLE usuarios (
+    id_usuario          INT UNSIGNED        NOT NULL AUTO_INCREMENT,
+    id_empleado         INT UNSIGNED        NOT NULL,
+    nombre_usuario      VARCHAR(50)         NOT NULL,
+    contrasena_hash     VARCHAR(255)        NOT NULL,   -- hash bcrypt, nunca texto plano
+    rol                 ENUM('Administrador','Cajero','Bodeguero') NOT NULL,
+    estado              ENUM('activo','inactivo','bloqueado')      NOT NULL DEFAULT 'activo',
+    intentos_fallidos   TINYINT UNSIGNED    NOT NULL DEFAULT 0,
+    ultimo_acceso       DATETIME            NULL,
+    fecha_creacion      DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_usuarios PRIMARY KEY (id_usuario),
+    CONSTRAINT uq_usuarios_nombre   UNIQUE (nombre_usuario),
+    CONSTRAINT uq_usuarios_empleado UNIQUE (id_empleado),   -- garantiza 1 a 1
+    CONSTRAINT fk_usuarios_empleado FOREIGN KEY (id_empleado)
+        REFERENCES empleado (id_empleado)
+        ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE = InnoDB;
 
 -- ---------------------------------------------------------------------

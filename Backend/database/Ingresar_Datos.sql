@@ -16,14 +16,14 @@ INSERT INTO gaveta (id_gaveta, monto_dinero) VALUES
 (3, 1794.00);
 
 -- ---------------------------------------------------------------------
--- Empleados (credencial guardada como hash SHA-256)
+-- Empleados
 -- ---------------------------------------------------------------------
-INSERT INTO empleado (id_empleado, nombre, apellidos, dni, email, cargo, credencial, fecha_ingreso, fecha_nacimiento) VALUES
-(1, 'Carlos',  'Mejía Rivera',     '0801198011111', 'carlos.mejia@tienda.hn',  'Administrador', SHA2('Admin2026*', 256),  '2018-03-01', '1980-05-14'),
-(2, 'Ana',     'López Zelaya',     '0801199222222', 'ana.lopez@tienda.hn',     'Cajero',        SHA2('Cajero01*', 256),   '2021-06-15', '1992-09-22'),
-(3, 'José',    'Martínez Flores',  '0501199533333', 'jose.martinez@tienda.hn', 'Cajero',        SHA2('Cajero02*', 256),   '2022-01-10', '1995-02-03'),
-(4, 'María',   'Hernández Castro', '0801199744444', 'maria.hernandez@tienda.hn','Cajero',       SHA2('Cajero03*', 256),   '2023-08-01', '1997-11-30'),
-(5, 'Luis',    'Ramírez Pineda',   '1804199055555', 'luis.ramirez@tienda.hn',  'Bodeguero',     SHA2('Bodega01*', 256),   '2020-02-20', '1990-07-08');
+INSERT INTO empleado (id_empleado, nombre, apellidos, dni, email, cargo, fecha_ingreso, fecha_nacimiento) VALUES
+(1, 'Carlos',  'Mejía Rivera',     '0801198011111', 'carlos.mejia@tienda.hn',  'Administrador', '2018-03-01', '1980-05-14'),
+(2, 'Ana',     'López Zelaya',     '0801199222222', 'ana.lopez@tienda.hn',     'Cajero',        '2021-06-15', '1992-09-22'),
+(3, 'José',    'Martínez Flores',  '0501199533333', 'jose.martinez@tienda.hn', 'Cajero',        '2022-01-10', '1995-02-03'),
+(4, 'María',   'Hernández Castro', '0801199744444', 'maria.hernandez@tienda.hn','Cajero',       '2023-08-01', '1997-11-30'),
+(5, 'Luis',    'Ramírez Pineda',   '1804199055555', 'luis.ramirez@tienda.hn',  'Bodeguero',     '2020-02-20', '1990-07-08');
 
 -- ---------------------------------------------------------------------
 -- Clientes
@@ -142,6 +142,22 @@ INSERT INTO detalle_proveedores (id_producto, id_proveedor, precio_proveedor) VA
 (8, 3, 44.00),
 (9, 4, 35.00),
 (10, 3, 32.00);
+
+-- ---------------------------------------------------------------------
+-- Usuarios (contraseña guardada como hash bcrypt, costo 10)
+--   Credenciales de prueba:
+--   cmejia     / Admin2026*   (Administrador)
+--   alopez     / Cajero01*    (Cajero)
+--   jmartinez  / Cajero02*    (Cajero)
+--   mhernandez / Cajero03*    (Cajero)
+--   lramirez   / Bodega01*    (Bodeguero)
+-- ---------------------------------------------------------------------
+INSERT INTO usuarios (id_usuario, id_empleado, nombre_usuario, contrasena_hash, rol, estado) VALUES
+(1, 1, 'cmejia',     '$2a$10$uwyKD7Z3akPaAGOi0FaKe.o/aFIzgcA1MNpJaAyeFKa6rtivGxIhi', 'Administrador', 'activo'),
+(2, 2, 'alopez',     '$2a$10$keQQaWl07addBoYrjDE6K.zTucAYWC5sTZ4OgOLFL5gUniIs3KcuC', 'Cajero',        'activo'),
+(3, 3, 'jmartinez',  '$2a$10$/.saaYsVAGBUtu8wieQf..5g/thWs5mOVq8g59IundiQpBDacy/h.', 'Cajero',        'activo'),
+(4, 4, 'mhernandez', '$2a$10$ckhxsEoHYq6j92fw0nJrHe2VmNJomMRz4scW4T7zECZ1YuZvB1CGG', 'Cajero',        'activo'),
+(5, 5, 'lramirez',   '$2a$10$SKuFfGbC1v.EkEKyWJxDzOoPuq.3rvnLXEsDXImcb15cCFcgeMdmS', 'Bodeguero',     'activo');
 
 COMMIT;
 
