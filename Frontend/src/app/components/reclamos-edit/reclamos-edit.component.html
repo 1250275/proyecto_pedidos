@@ -1,0 +1,42 @@
+<h1 class="h4 mb-3">Actualizar Reclamo No. {{ user.id_reclamo }}</h1>
+
+<div class="card">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="updateUser(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-4 form-group">
+          <label for="dni_cliente" class="form-label">Cliente</label>
+          <select id="dni_cliente" class="form-select" [(ngModel)]="user.dni_cliente" name="dni_cliente" required>
+            <option *ngFor="let lista of Clientelist" [ngValue]="lista.dni_cliente">
+              {{ lista.nombre }} {{ lista.apellido }} ({{ lista.dni_cliente }})
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el cliente</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="id_empleado" class="form-label">Empleado que atiende</label>
+          <select id="id_empleado" class="form-select" [(ngModel)]="user.id_empleado" name="id_empleado" required>
+            <option *ngFor="let lista of Empleadolist" [ngValue]="lista.id_empleado">
+              {{ lista.nombre }} {{ lista.apellidos }}
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el empleado</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="tipo_reclamo" class="form-label">Tipo de reclamo</label>
+          <select id="tipo_reclamo" class="form-select" [(ngModel)]="user.tipo_reclamo" name="tipo_reclamo" required>
+            <option *ngFor="let tipo of tipos" [ngValue]="tipo">{{ tipo }}</option>
+          </select>
+          <div class="invalid-feedback">Seleccione el tipo</div>
+        </div>
+        <div class="col-12 form-group">
+          <label for="observaciones" class="form-label">Observaciones</label>
+          <textarea id="observaciones" [(ngModel)]="user.observaciones" name="observaciones" rows="2" class="form-control" maxlength="500" required></textarea>
+          <div class="invalid-feedback">Describa el reclamo</div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3 me-2">Actualizar</button>
+      <a routerLink="/reclamos" class="btn btn-outline-secondary mt-3">Cancelar</a>
+    </form>
+  </div>
+</div>

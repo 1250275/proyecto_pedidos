@@ -1,0 +1,101 @@
+<h1 class="h4 mb-3">Registro de Productos</h1>
+
+<div class="card mb-4" *ngIf="puedeEscribir">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="AgregarValor(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-4 form-group">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" id="nombre" [(ngModel)]="user.nombre" name="nombre" placeholder="DIGITE EL NOMBRE"
+            class="form-control" maxlength="100" required />
+          <div class="invalid-feedback">Digite el nombre</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="marca" class="form-label">Marca</label>
+          <input type="text" id="marca" [(ngModel)]="user.marca" name="marca" placeholder="DIGITE LA MARCA"
+            class="form-control" maxlength="50" />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="categoria" class="form-label">Categoría</label>
+          <input type="text" id="categoria" [(ngModel)]="user.categoria" name="categoria"
+            placeholder="DIGITE LA CATEGORÍA" class="form-control" maxlength="50" required />
+          <div class="invalid-feedback">Digite la categoría</div>
+        </div>
+        <div class="col-6 col-md-3 form-group">
+          <label for="precio_compra" class="form-label">Precio compra</label>
+          <input type="number" id="precio_compra" [(ngModel)]="user.precio_compra" name="precio_compra"
+            class="form-control" min="0" step="0.01" required />
+          <div class="invalid-feedback">Digite el precio</div>
+        </div>
+        <div class="col-6 col-md-3 form-group">
+          <label for="precio_venta" class="form-label">Precio venta</label>
+          <input type="number" id="precio_venta" [(ngModel)]="user.precio_venta" name="precio_venta"
+            class="form-control" min="0" step="0.01" required />
+          <div class="invalid-feedback">Digite el precio</div>
+        </div>
+        <div class="col-6 col-md-3 form-group">
+          <label for="stock" class="form-label">Stock</label>
+          <input type="number" id="stock" [(ngModel)]="user.stock" name="stock" class="form-control" min="0"
+            step="1" required />
+          <div class="invalid-feedback">Digite el stock</div>
+        </div>
+        <div class="col-6 col-md-3 form-group">
+          <label for="stock_limite" class="form-label">Stock mínimo</label>
+          <input type="number" id="stock_limite" [(ngModel)]="user.stock_limite" name="stock_limite"
+            class="form-control" min="0" step="1" required />
+          <div class="invalid-feedback">Digite el stock mínimo</div>
+        </div>
+        <div class="col-12 form-group">
+          <label for="descripcion" class="form-label">Descripción</label>
+          <textarea id="descripcion" [(ngModel)]="user.descripcion" name="descripcion" rows="2"
+            placeholder="DIGITE LA DESCRIPCIÓN" class="form-control"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">Agregar</button>
+    </form>
+  </div>
+</div>
+
+<app-barra-tabla [(filtro)]="filterPost" titulo="Productos"></app-barra-tabla>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover" id="tabla">
+    <thead>
+      <tr>
+        <th>NO</th>
+        <th>NOMBRE</th>
+        <th>MARCA</th>
+        <th>CATEGORÍA</th>
+        <th>PRECIO COMPRA</th>
+        <th>PRECIO VENTA</th>
+        <th>STOCK</th>
+        <th>STOCK MÍNIMO</th>
+        <th>DESCRIPCIÓN</th>
+        <th *ngIf="puedeEscribir" class="no-export">ACCIONES</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="TUser | filtro: filterPost as filtrados">
+      <tr *ngFor="let User of filtrados">
+        <td>{{ User.id_producto }}</td>
+        <td>{{ User.nombre }}</td>
+        <td>{{ User.marca }}</td>
+        <td>{{ User.categoria }}</td>
+        <td>L {{ User.precio_compra | number: '1.2-2' }}</td>
+        <td>L {{ User.precio_venta | number: '1.2-2' }}</td>
+        <td>
+          {{ User.stock }}
+          <span *ngIf="User.stock <= User.stock_limite" class="badge text-bg-warning ms-1">Bajo</span>
+        </td>
+        <td>{{ User.stock_limite }}</td>
+        <td>{{ User.descripcion }}</td>
+        <td *ngIf="puedeEscribir" class="text-nowrap no-export">
+          <button class="btn btn-success btn-sm me-1" [routerLink]="['/productos/edit', User.id_producto]">Actualizar</button>
+          <button *ngIf="esAdmin" class="btn btn-warning btn-sm" (click)="EliminarData(User.id_producto, User.nombre)">Eliminar</button>
+        </td>
+      </tr>
+      <tr *ngIf="filtrados.length === 0">
+        <td colspan="10" class="text-center text-muted">{{ filterPost ? 'Sin resultados para la búsqueda' : 'No hay registros' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

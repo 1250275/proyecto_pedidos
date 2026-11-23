@@ -1,0 +1,76 @@
+<h1 class="h4 mb-3">Registro de Pedidos</h1>
+
+<div class="card mb-4" *ngIf="puedeEscribir">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="AgregarValor(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-4 form-group">
+          <label for="dni_cliente" class="form-label">Cliente</label>
+          <select id="dni_cliente" class="form-select" [(ngModel)]="user.dni_cliente" name="dni_cliente" required>
+            <option [ngValue]="null" disabled>Seleccione el cliente</option>
+            <option *ngFor="let lista of Clientelist" [ngValue]="lista.dni_cliente">
+              {{ lista.nombre }} {{ lista.apellido }} ({{ lista.dni_cliente }})
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el cliente</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="id_empleado" class="form-label">Empleado</label>
+          <select id="id_empleado" class="form-select" [(ngModel)]="user.id_empleado" name="id_empleado" required>
+            <option [ngValue]="null" disabled>Seleccione el empleado</option>
+            <option *ngFor="let lista of Empleadolist" [ngValue]="lista.id_empleado">
+              {{ lista.nombre }} {{ lista.apellidos }}
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el empleado</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="id_gaveta" class="form-label">Gaveta</label>
+          <select id="id_gaveta" class="form-select" [(ngModel)]="user.id_gaveta" name="id_gaveta" required>
+            <option [ngValue]="null" disabled>Seleccione la gaveta</option>
+            <option *ngFor="let lista of Gavetalist" [ngValue]="lista.id_gaveta">Gaveta {{ lista.id_gaveta }}</option>
+          </select>
+          <div class="invalid-feedback">Seleccione la gaveta</div>
+        </div>
+      </div>
+      <p class="form-text mb-0 mt-2">El total se calcula al agregar productos en el detalle del pedido y se suma a la gaveta elegida.</p>
+      <button type="submit" class="btn btn-primary mt-3">Agregar</button>
+    </form>
+  </div>
+</div>
+
+<app-barra-tabla [(filtro)]="filterPost" titulo="Pedidos"></app-barra-tabla>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover" id="tabla">
+    <thead>
+      <tr>
+        <th>NO</th>
+        <th>FECHA Y HORA</th>
+        <th>CLIENTE</th>
+        <th>EMPLEADO</th>
+        <th>GAVETA</th>
+        <th>TOTAL</th>
+        <th class="no-export">ACCIONES</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="TUser | filtro: filterPost : textoBusqueda as filtrados">
+      <tr *ngFor="let User of filtrados">
+        <td>{{ User.id_pedido }}</td>
+        <td class="text-nowrap">{{ User.fecha_hora }}</td>
+        <td>{{ nombreCliente(User.dni_cliente) }}</td>
+        <td>{{ nombreEmpleado(User.id_empleado) }}</td>
+        <td>{{ User.id_gaveta }}</td>
+        <td>L {{ User.total | number: '1.2-2' }}</td>
+        <td class="text-nowrap no-export">
+          <button class="btn btn-primary btn-sm me-1" routerLink="/detalle-pedidos" [queryParams]="{ pedido: User.id_pedido }">Detalle</button>
+          <button *ngIf="puedeEscribir" class="btn btn-success btn-sm me-1" [routerLink]="['/pedidos/edit', User.id_pedido]">Actualizar</button>
+          <button *ngIf="esAdmin" class="btn btn-warning btn-sm" (click)="EliminarData(User.id_pedido)">Eliminar</button>
+        </td>
+      </tr>
+      <tr *ngIf="filtrados.length === 0">
+        <td colspan="7" class="text-center text-muted">{{ filterPost ? 'Sin resultados para la búsqueda' : 'No hay registros' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

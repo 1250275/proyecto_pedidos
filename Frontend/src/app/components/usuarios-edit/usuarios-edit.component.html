@@ -1,0 +1,49 @@
+<h1 class="h4 mb-3">Actualizar Usuario: {{ user.nombre_empleado }}</h1>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="updateUser(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-4 form-group">
+          <label for="nombre_usuario" class="form-label">Usuario</label>
+          <input type="text" id="nombre_usuario" [(ngModel)]="user.nombre_usuario" name="nombre_usuario"
+            class="form-control" maxlength="50" required />
+          <div class="invalid-feedback">Digite el usuario</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="rol" class="form-label">Rol</label>
+          <select id="rol" class="form-select" [(ngModel)]="user.rol" name="rol" [disabled]="esPropio" required>
+            <option *ngFor="let rol of Rollist" [ngValue]="rol">{{ rol }}</option>
+          </select>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="estado" class="form-label">Estado</label>
+          <select id="estado" class="form-select" [(ngModel)]="user.estado" name="estado" [disabled]="esPropio" required>
+            <option *ngFor="let estado of estados" [ngValue]="estado">{{ estado }}</option>
+          </select>
+        </div>
+      </div>
+      <p class="form-text mb-0 mt-2" *ngIf="esPropio">No puede cambiar el rol ni el estado de su propio usuario.</p>
+      <p class="form-text mb-0 mt-2" *ngIf="!esPropio">Al cambiar el estado a "activo" se reinician los intentos fallidos.</p>
+      <button type="submit" class="btn btn-success mt-3 me-2">Actualizar</button>
+      <a routerLink="/usuarios" class="btn btn-outline-secondary mt-3">Cancelar</a>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header fw-semibold">Restablecer contraseña</div>
+  <div class="card-body">
+    <form #fc="ngForm" (ngSubmit)="RestablecerContrasena(fc)" [class.was-validated]="fc.submitted" novalidate>
+      <div class="row g-3 align-items-start">
+        <div class="col-md-6 form-group">
+          <label for="contrasena_nueva" class="form-label">Contraseña nueva</label>
+          <input type="password" id="contrasena_nueva" [(ngModel)]="contrasenaNueva" name="contrasena_nueva"
+            placeholder="MÍNIMO 8 CARACTERES" class="form-control" minlength="8" autocomplete="new-password" required />
+          <div class="invalid-feedback">Mínimo 8 caracteres</div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-warning mt-3">Restablecer contraseña</button>
+    </form>
+  </div>
+</div>

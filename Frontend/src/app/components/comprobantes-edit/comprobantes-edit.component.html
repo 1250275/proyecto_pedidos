@@ -1,0 +1,25 @@
+<h1 class="h4 mb-3">Actualizar Comprobante</h1>
+
+<div class="card">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="updateUser(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-6 form-group">
+          <label for="codigo_comprobante" class="form-label">Código</label>
+          <input type="text" id="codigo_comprobante" [(ngModel)]="user.codigo_comprobante" name="codigo_comprobante" class="form-control" readonly />
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="id_pedido" class="form-label">Pedido</label>
+          <select id="id_pedido" class="form-select" [(ngModel)]="user.id_pedido" name="id_pedido" required>
+            <option *ngFor="let lista of pedidosDisponibles" [ngValue]="lista.id_pedido">
+              Pedido {{ lista.id_pedido }} - {{ lista.fecha_hora }} - L {{ lista.total | number: '1.2-2' }}
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el pedido</div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3 me-2">Actualizar</button>
+      <a routerLink="/comprobantes" class="btn btn-outline-secondary mt-3">Cancelar</a>
+    </form>
+  </div>
+</div>

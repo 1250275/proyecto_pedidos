@@ -1,0 +1,47 @@
+<h1 class="h4 mb-3">Actualizar Empleado No. {{ user.id_empleado }}</h1>
+
+<div class="card">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="updateUser(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-4 form-group">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" id="nombre" [(ngModel)]="user.nombre" name="nombre" class="form-control" maxlength="50" required />
+          <div class="invalid-feedback">Digite el nombre</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="apellidos" class="form-label">Apellidos</label>
+          <input type="text" id="apellidos" [(ngModel)]="user.apellidos" name="apellidos" class="form-control" maxlength="80" required />
+          <div class="invalid-feedback">Digite los apellidos</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="dni" class="form-label">DNI</label>
+          <input type="text" id="dni" [(ngModel)]="user.dni" name="dni" class="form-control" maxlength="15" required />
+          <div class="invalid-feedback">Digite el DNI</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="email" class="form-label">Correo</label>
+          <input type="email" id="email" [(ngModel)]="user.email" name="email" class="form-control" maxlength="100" required email />
+          <div class="invalid-feedback">Digite un correo válido</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="cargo" class="form-label">Cargo</label>
+          <input type="text" id="cargo" [(ngModel)]="user.cargo" name="cargo" class="form-control" maxlength="50" required />
+          <div class="invalid-feedback">Digite el cargo</div>
+        </div>
+        <div class="col-md-2 form-group">
+          <label for="fecha_nacimiento" class="form-label">Fecha nacimiento</label>
+          <input type="date" id="fecha_nacimiento" [(ngModel)]="user.fecha_nacimiento" name="fecha_nacimiento" class="form-control" required />
+          <div class="invalid-feedback">Seleccione la fecha</div>
+        </div>
+        <div class="col-md-2 form-group">
+          <label for="fecha_ingreso" class="form-label">Fecha ingreso</label>
+          <input type="date" id="fecha_ingreso" [(ngModel)]="user.fecha_ingreso" name="fecha_ingreso" class="form-control" required />
+          <div class="invalid-feedback">Seleccione la fecha</div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3 me-2">Actualizar</button>
+      <a routerLink="/empleados" class="btn btn-outline-secondary mt-3">Cancelar</a>
+    </form>
+  </div>
+</div>

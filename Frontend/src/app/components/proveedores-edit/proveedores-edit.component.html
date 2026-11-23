@@ -1,0 +1,30 @@
+<h1 class="h4 mb-3">Actualizar Proveedor No. {{ user.id_proveedor }}</h1>
+
+<div class="card">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="updateUser(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-6 form-group">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" id="nombre" [(ngModel)]="user.nombre" name="nombre" class="form-control" maxlength="100" required />
+          <div class="invalid-feedback">Digite el nombre</div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="email" class="form-label">Correo</label>
+          <input type="email" id="email" [(ngModel)]="user.email" name="email" class="form-control" maxlength="100" email />
+          <div class="invalid-feedback">Digite un correo válido</div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="text" id="telefono" [(ngModel)]="user.telefono" name="telefono" class="form-control" maxlength="20" />
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="n_cuenta" class="form-label">Número de cuenta</label>
+          <input type="text" id="n_cuenta" [(ngModel)]="user.n_cuenta" name="n_cuenta" class="form-control" maxlength="30" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3 me-2">Actualizar</button>
+      <a routerLink="/proveedores" class="btn btn-outline-secondary mt-3">Cancelar</a>
+    </form>
+  </div>
+</div>

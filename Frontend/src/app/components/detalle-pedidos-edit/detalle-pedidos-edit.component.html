@@ -1,0 +1,28 @@
+<h1 class="h4 mb-3">Actualizar Detalle del Pedido No. {{ user.id_pedido }}</h1>
+
+<div class="card">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="updateUser(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-5 form-group">
+          <label for="producto" class="form-label">Producto</label>
+          <input type="text" id="producto" [ngModel]="producto ? producto.nombre + ' - L ' + (precioUnitario | number: '1.2-2') + ' c/u (stock ' + producto.stock + ')' : ''"
+            name="producto" class="form-control" readonly />
+        </div>
+        <div class="col-6 col-md-3 form-group">
+          <label for="cantidad" class="form-label">Cantidad</label>
+          <input type="number" id="cantidad" [(ngModel)]="user.cantidad" name="cantidad" (ngModelChange)="calcularSubtotal()"
+            class="form-control" min="1" step="1" required />
+          <div class="invalid-feedback">Mínimo 1</div>
+        </div>
+        <div class="col-6 col-md-4 form-group">
+          <label for="sub_total" class="form-label">Subtotal</label>
+          <input type="text" id="sub_total" [ngModel]="'L ' + (user.sub_total | number: '1.2-2')" name="sub_total_vista"
+            class="form-control" readonly />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3 me-2">Actualizar</button>
+      <button type="button" class="btn btn-outline-secondary mt-3" (click)="volver()">Cancelar</button>
+    </form>
+  </div>
+</div>

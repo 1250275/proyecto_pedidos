@@ -1,0 +1,10 @@
+.menu-btn {
+  --mat-button-text-label-text-color: #fff;
+  justify-content: flex-start;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    padding: 0.5rem 0;
+  }
+}

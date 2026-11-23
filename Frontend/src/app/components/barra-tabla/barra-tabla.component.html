@@ -1,0 +1,16 @@
+<div class="row g-2 align-items-center mb-3">
+  <div class="col-md-6">
+    <div class="input-group">
+      <span class="input-group-text"><mat-icon class="icono">search</mat-icon></span>
+      <input type="text" class="form-control" name="filterPost" placeholder="Buscar en {{ titulo | lowercase }}..."
+        [ngModel]="filtro" (ngModelChange)="cambiarFiltro($event)" />
+      <button *ngIf="filtro" class="btn btn-outline-secondary" type="button" (click)="cambiarFiltro('')">Limpiar</button>
+    </div>
+  </div>
+  <div class="col-md-6 text-md-end">
+    <button (click)="exportToExcel()" class="btn btn-success me-2">Exportar a Excel</button>
+    <button (click)="openPDF()" class="btn btn-primary" [disabled]="generandoPdf">
+      {{ generandoPdf ? 'Generando...' : 'Descargar PDF' }}
+    </button>
+  </div>
+</div>

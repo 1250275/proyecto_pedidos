@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-principal">
+  <div class="container">
+    <a routerLink="/inicio" class="navbar-brand">PEDIDOS</a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      aria-controls="menuPrincipal"
+      [attr.aria-expanded]="menuAbierto"
+      aria-label="Mostrar menú"
+      (click)="menuAbierto = !menuAbierto"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menuPrincipal" [class.show]="menuAbierto">
+      <div class="navbar-nav me-auto">
+        <ng-container *ngFor="let grupo of grupos">
+          <button mat-button class="menu-btn" [matMenuTriggerFor]="submenu">
+            {{ grupo.titulo }}
+            <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
+          </button>
+          <mat-menu #submenu="matMenu">
+            <a mat-menu-item *ngFor="let op of grupo.opciones" [routerLink]="op.ruta" (click)="menuAbierto = false">
+              {{ op.titulo }}
+            </a>
+          </mat-menu>
+        </ng-container>
+      </div>
+
+      <button mat-button class="menu-btn" [matMenuTriggerFor]="menuUsuario">
+        <mat-icon>account_circle</mat-icon>
+        {{ auth.usuario?.nombre_usuario }}
+        <span class="badge bg-light text-dark ms-1">{{ auth.usuario?.rol }}</span>
+      </button>
+      <mat-menu #menuUsuario="matMenu" xPosition="before">
+        <a mat-menu-item routerLink="/inicio" (click)="menuAbierto = false">
+          <mat-icon>home</mat-icon>
+          <span>Inicio</span>
+        </a>
+        <button mat-menu-item (click)="CerrarSesion()">
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar sesión</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</nav>

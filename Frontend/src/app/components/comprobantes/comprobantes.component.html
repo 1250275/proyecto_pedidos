@@ -1,0 +1,57 @@
+<h1 class="h4 mb-3">Registro de Comprobantes</h1>
+
+<div class="card mb-4" *ngIf="puedeEscribir">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="AgregarValor(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-6 form-group">
+          <label for="codigo_comprobante" class="form-label">Código</label>
+          <input type="text" id="codigo_comprobante" [(ngModel)]="user.codigo_comprobante" name="codigo_comprobante"
+            placeholder="000-001-01-00000000" class="form-control" maxlength="25" required />
+          <div class="invalid-feedback">Digite el código</div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="id_pedido" class="form-label">Pedido</label>
+          <select id="id_pedido" class="form-select" [(ngModel)]="user.id_pedido" name="id_pedido" required>
+            <option [ngValue]="null" disabled>Seleccione el pedido</option>
+            <option *ngFor="let lista of pedidosSinComprobante" [ngValue]="lista.id_pedido">
+              Pedido {{ lista.id_pedido }} - {{ lista.fecha_hora }} - L {{ lista.total | number: '1.2-2' }}
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el pedido</div>
+          <div class="form-text">Solo aparecen los pedidos que aún no tienen comprobante.</div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">Agregar</button>
+    </form>
+  </div>
+</div>
+
+<app-barra-tabla [(filtro)]="filterPost" titulo="Comprobantes"></app-barra-tabla>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover" id="tabla">
+    <thead>
+      <tr>
+        <th>CÓDIGO</th>
+        <th>PEDIDO</th>
+        <th>TOTAL DEL PEDIDO</th>
+        <th *ngIf="puedeEscribir" class="no-export">ACCIONES</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="TUser | filtro: filterPost as filtrados">
+      <tr *ngFor="let User of filtrados">
+        <td>{{ User.codigo_comprobante }}</td>
+        <td>{{ User.id_pedido }}</td>
+        <td>L {{ totalPedido(User.id_pedido) | number: '1.2-2' }}</td>
+        <td *ngIf="puedeEscribir" class="text-nowrap no-export">
+          <button class="btn btn-success btn-sm me-1" [routerLink]="['/comprobantes/edit', User.codigo_comprobante]">Actualizar</button>
+          <button *ngIf="esAdmin" class="btn btn-warning btn-sm" (click)="EliminarData(User.codigo_comprobante)">Eliminar</button>
+        </td>
+      </tr>
+      <tr *ngIf="filtrados.length === 0">
+        <td colspan="4" class="text-center text-muted">{{ filterPost ? 'Sin resultados para la búsqueda' : 'No hay registros' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

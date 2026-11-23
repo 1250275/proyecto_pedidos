@@ -1,0 +1,47 @@
+<h1 class="h4 mb-3">Actualizar Pedido No. {{ user.id_pedido }}</h1>
+
+<div class="card">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="updateUser(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-6 form-group">
+          <label for="fecha_hora" class="form-label">Fecha y hora</label>
+          <input type="text" id="fecha_hora" [ngModel]="user.fecha_hora" name="fecha_hora" class="form-control" readonly />
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="total" class="form-label">Total</label>
+          <input type="text" id="total" [ngModel]="'L ' + (user.total | number: '1.2-2')" name="total" class="form-control" readonly />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="dni_cliente" class="form-label">Cliente</label>
+          <select id="dni_cliente" class="form-select" [(ngModel)]="user.dni_cliente" name="dni_cliente" required>
+            <option *ngFor="let lista of Clientelist" [ngValue]="lista.dni_cliente">
+              {{ lista.nombre }} {{ lista.apellido }} ({{ lista.dni_cliente }})
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el cliente</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="id_empleado" class="form-label">Empleado</label>
+          <select id="id_empleado" class="form-select" [(ngModel)]="user.id_empleado" name="id_empleado" required>
+            <option *ngFor="let lista of Empleadolist" [ngValue]="lista.id_empleado">
+              {{ lista.nombre }} {{ lista.apellidos }}
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el empleado</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="id_gaveta" class="form-label">Gaveta</label>
+          <select id="id_gaveta" class="form-select" [(ngModel)]="user.id_gaveta" name="id_gaveta" required>
+            <option *ngFor="let lista of Gavetalist" [ngValue]="lista.id_gaveta">Gaveta {{ lista.id_gaveta }}</option>
+          </select>
+          <div class="invalid-feedback">Seleccione la gaveta</div>
+          <div class="form-text">Si cambia la gaveta, el total del pedido pasa a la nueva gaveta.</div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3 me-2">Actualizar</button>
+      <a routerLink="/detalle-pedidos" [queryParams]="{ pedido: user.id_pedido }" class="btn btn-primary mt-3 me-2">Ver detalle</a>
+      <a routerLink="/pedidos" class="btn btn-outline-secondary mt-3">Cancelar</a>
+    </form>
+  </div>
+</div>

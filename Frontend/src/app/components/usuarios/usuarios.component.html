@@ -1,0 +1,86 @@
+<h1 class="h4 mb-3">Registro de Usuarios</h1>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="AgregarValor(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-4 form-group">
+          <label for="id_empleado" class="form-label">Empleado</label>
+          <select id="id_empleado" class="form-select" [(ngModel)]="user.id_empleado" name="id_empleado" required>
+            <option [ngValue]="null" disabled>Seleccione el empleado</option>
+            <option *ngFor="let lista of empleadosSinUsuario" [ngValue]="lista.id_empleado">
+              {{ lista.nombre }} {{ lista.apellidos }}
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el empleado</div>
+          <div class="form-text" *ngIf="empleadosSinUsuario.length === 0">Todos los empleados ya tienen usuario.</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="nombre_usuario" class="form-label">Usuario</label>
+          <input type="text" id="nombre_usuario" [(ngModel)]="user.nombre_usuario" name="nombre_usuario"
+            placeholder="DIGITE EL USUARIO" class="form-control" maxlength="50" autocomplete="off" required />
+          <div class="invalid-feedback">Digite el usuario</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="contrasena" class="form-label">Contraseña</label>
+          <input type="password" id="contrasena" [(ngModel)]="user.contrasena" name="contrasena"
+            placeholder="MÍNIMO 8 CARACTERES" class="form-control" minlength="8" autocomplete="new-password" required />
+          <div class="invalid-feedback">Mínimo 8 caracteres</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="rol" class="form-label">Rol</label>
+          <select id="rol" class="form-select" [(ngModel)]="user.rol" name="rol" required>
+            <option [ngValue]="null" disabled>Seleccione el rol</option>
+            <option *ngFor="let rol of Rollist" [ngValue]="rol">{{ rol }}</option>
+          </select>
+          <div class="invalid-feedback">Seleccione el rol</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="estado" class="form-label">Estado</label>
+          <select id="estado" class="form-select" [(ngModel)]="user.estado" name="estado" required>
+            <option *ngFor="let estado of estados" [ngValue]="estado">{{ estado }}</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">Agregar</button>
+    </form>
+  </div>
+</div>
+
+<app-barra-tabla [(filtro)]="filterPost" titulo="Usuarios"></app-barra-tabla>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover" id="tabla">
+    <thead>
+      <tr>
+        <th>NO</th>
+        <th>EMPLEADO</th>
+        <th>USUARIO</th>
+        <th>ROL</th>
+        <th>ESTADO</th>
+        <th>INTENTOS FALLIDOS</th>
+        <th>ÚLTIMO ACCESO</th>
+        <th class="no-export">ACCIONES</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="TUser | filtro: filterPost as filtrados">
+      <tr *ngFor="let User of filtrados">
+        <td>{{ User.id_usuario }}</td>
+        <td>{{ User.nombre_empleado }}</td>
+        <td>{{ User.nombre_usuario }}</td>
+        <td>{{ User.rol }}</td>
+        <td><span class="badge" [ngClass]="claseEstado(User.estado)">{{ User.estado }}</span></td>
+        <td>{{ User.intentos_fallidos }}</td>
+        <td>{{ User.ultimo_acceso ?? 'Nunca' }}</td>
+        <td class="text-nowrap no-export">
+          <button class="btn btn-success btn-sm me-1" [routerLink]="['/usuarios/edit', User.id_usuario]">Actualizar</button>
+          <button *ngIf="User.id_usuario !== idActual" class="btn btn-warning btn-sm"
+            (click)="EliminarData(User.id_usuario, User.nombre_usuario)">Eliminar</button>
+        </td>
+      </tr>
+      <tr *ngIf="filtrados.length === 0">
+        <td colspan="8" class="text-center text-muted">{{ filterPost ? 'Sin resultados para la búsqueda' : 'No hay registros' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,166 @@
+<h1 class="h4 mb-3">Nueva venta</h1>
+
+<div class="row g-4" *ngIf="!venta; else resumen">
+  <div class="col-lg-7">
+    <div class="row g-2 mb-3">
+      <div class="col-sm-7">
+        <div class="input-group">
+          <span class="input-group-text"><mat-icon class="icono">search</mat-icon></span>
+          <input type="text" class="form-control" name="filterPost" placeholder="Buscar producto, marca o categoría..."
+            [(ngModel)]="filterPost" />
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <select class="form-select" name="categoria" [(ngModel)]="categoria" aria-label="Categoría">
+          <option value="">Todas las categorías</option>
+          <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-6 col-md-4" *ngFor="let p of productosFiltrados">
+        <div class="card h-100 producto" [class.agotado]="disponible(p) < 1">
+          <div class="card-body d-flex flex-column">
+            <div class="small text-muted">{{ p.categoria }}</div>
+            <div class="fw-semibold">{{ p.nombre }}</div>
+            <div class="small text-muted">{{ p.marca }}</div>
+            <div class="mt-auto pt-2 d-flex justify-content-between align-items-end gap-1">
+              <span class="precio">L {{ p.precio_venta | number: '1.2-2' }}</span>
+              <span class="badge" [ngClass]="disponible(p) < 1 ? 'text-bg-secondary' : p.stock <= p.stock_limite ? 'text-bg-warning' : 'text-bg-light border'">
+                {{ disponible(p) < 1 ? 'Agotado' : 'Stock ' + disponible(p) }}
+              </span>
+            </div>
+            <button class="btn btn-primary btn-sm mt-2" (click)="carrito.agregar(p)" [disabled]="disponible(p) < 1">
+              {{ carrito.item(p.id_producto) ? 'Agregar otro' : 'Agregar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 text-center text-muted py-4" *ngIf="productosFiltrados.length === 0">
+        No hay productos que coincidan con la búsqueda
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card carrito" id="carrito">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">
+          <mat-icon class="icono align-middle">shopping_cart</mat-icon>
+          Carrito ({{ carrito.unidades }} {{ carrito.unidades === 1 ? 'unidad' : 'unidades' }})
+        </span>
+        <button *ngIf="carrito.items.length" class="btn btn-link btn-sm p-0" (click)="VaciarCarrito()">Vaciar</button>
+      </div>
+
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-center text-muted py-4" *ngIf="carrito.items.length === 0">
+          Agregue productos desde el catálogo
+        </li>
+        <li class="list-group-item" *ngFor="let item of carrito.items">
+          <div class="d-flex justify-content-between">
+            <span class="fw-semibold">{{ item.nombre }}</span>
+            <button class="btn btn-link btn-sm p-0 text-muted" (click)="carrito.quitar(item.id_producto)" aria-label="Quitar">
+              <mat-icon class="icono">close</mat-icon>
+            </button>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-1">
+            <div class="input-group input-group-sm cantidad">
+              <button class="btn btn-outline-secondary" type="button" (click)="cambiarCantidad(item, item.cantidad - 1)">−</button>
+              <input type="number" class="form-control text-center" [ngModel]="item.cantidad"
+                (ngModelChange)="cambiarCantidad(item, $event)" min="1" [max]="item.stock" aria-label="Cantidad" />
+              <button class="btn btn-outline-secondary" type="button" (click)="cambiarCantidad(item, item.cantidad + 1)"
+                [disabled]="item.cantidad >= item.stock">+</button>
+            </div>
+            <span class="small text-muted">× L {{ item.precio_venta | number: '1.2-2' }}</span>
+            <span class="fw-semibold">L {{ carrito.subtotal(item) | number: '1.2-2' }}</span>
+          </div>
+          <div class="small text-muted" *ngIf="item.cantidad >= item.stock">Máximo disponible</div>
+        </li>
+      </ul>
+
+      <div class="card-body border-top">
+        <div class="mb-2">
+          <label for="cliente" class="form-label">Cliente</label>
+          <input id="cliente" class="form-control" list="listaClientes" name="cliente" placeholder="Escriba el nombre o DNI"
+            [(ngModel)]="clienteTexto" (ngModelChange)="elegirCliente($event)" autocomplete="off"
+            [class.is-valid]="carrito.dni_cliente" />
+          <datalist id="listaClientes">
+            <option *ngFor="let c of Clientelist" [value]="etiquetaCliente(c)"></option>
+          </datalist>
+        </div>
+        <div class="mb-3">
+          <label for="gaveta" class="form-label">Gaveta</label>
+          <select id="gaveta" class="form-select" name="gaveta" [(ngModel)]="carrito.id_gaveta" (ngModelChange)="elegirGaveta()">
+            <option [ngValue]="null" disabled>Seleccione la gaveta</option>
+            <option *ngFor="let g of Gavetalist" [ngValue]="g.id_gaveta">Gaveta {{ g.id_gaveta }}</option>
+          </select>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center total mb-3">
+          <span>Total</span>
+          <span>L {{ carrito.total | number: '1.2-2' }}</span>
+        </div>
+
+        <div class="row g-2 align-items-end mb-3">
+          <div class="col-6">
+            <label for="efectivo" class="form-label">Efectivo recibido</label>
+            <input id="efectivo" type="number" class="form-control" name="efectivo" min="0" step="0.01"
+              [(ngModel)]="efectivo" placeholder="Opcional" />
+          </div>
+          <div class="col-6 text-end" *ngIf="cambio != null">
+            <div class="small text-muted">Cambio</div>
+            <div class="fs-5 fw-semibold" [class.text-danger]="cambio < 0">L {{ cambio | number: '1.2-2' }}</div>
+          </div>
+        </div>
+
+        <button class="btn btn-success w-100 btn-lg" (click)="ConfirmarVenta()"
+          [disabled]="procesando || carrito.items.length === 0">
+          {{ procesando ? 'Registrando...' : 'Confirmar venta' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="barra-movil d-lg-none" *ngIf="carrito.items.length">
+    <span>
+      <mat-icon class="icono align-middle">shopping_cart</mat-icon>
+      {{ carrito.unidades }} · <strong>L {{ carrito.total | number: '1.2-2' }}</strong>
+    </span>
+    <button class="btn btn-light btn-sm" (click)="verCarrito()">Ver carrito</button>
+  </div>
+</div>
+
+<ng-template #resumen>
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-body text-center">
+          <mat-icon class="icono-exito">check_circle</mat-icon>
+          <h2 class="h4 mt-2">Venta registrada</h2>
+          <p class="text-muted mb-1">Comprobante <strong>{{ venta.codigo_comprobante }}</strong> · Pedido No. {{ venta.id_pedido }}</p>
+          <p class="text-muted">{{ venta.fecha_hora }} · {{ venta.cliente }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between" *ngFor="let p of venta.productos">
+            <span>{{ p.cantidad }} × {{ p.nombre }}</span>
+            <span>L {{ p.sub_total | number: '1.2-2' }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between total">
+            <span>Total</span>
+            <span>L {{ venta.total | number: '1.2-2' }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between" *ngIf="venta.efectivo != null">
+            <span>Efectivo / Cambio</span>
+            <span>L {{ venta.efectivo | number: '1.2-2' }} / L {{ venta.cambio | number: '1.2-2' }}</span>
+          </li>
+        </ul>
+        <div class="card-body d-flex flex-wrap gap-2 justify-content-center">
+          <button class="btn btn-primary" (click)="ImprimirTicket()">Imprimir ticket</button>
+          <button class="btn btn-success" (click)="NuevaVenta()">Nueva venta</button>
+          <a class="btn btn-outline-secondary" routerLink="/detalle-pedidos" [queryParams]="{ pedido: venta.id_pedido }">Ver detalle</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

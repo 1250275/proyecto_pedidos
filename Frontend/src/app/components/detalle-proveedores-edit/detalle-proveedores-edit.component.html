@@ -1,0 +1,26 @@
+<h1 class="h4 mb-3">Actualizar Detalle de Proveedor</h1>
+
+<div class="card">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="updateUser(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-5 form-group">
+          <label for="producto" class="form-label">Producto</label>
+          <input type="text" id="producto" [ngModel]="nombreProducto" name="producto" class="form-control" readonly />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="proveedor" class="form-label">Proveedor</label>
+          <input type="text" id="proveedor" [ngModel]="nombreProveedor" name="proveedor" class="form-control" readonly />
+        </div>
+        <div class="col-md-3 form-group">
+          <label for="precio_proveedor" class="form-label">Precio del proveedor</label>
+          <input type="number" id="precio_proveedor" [(ngModel)]="user.precio_proveedor" name="precio_proveedor"
+            class="form-control" min="0" step="0.01" required />
+          <div class="invalid-feedback">Digite el precio</div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3 me-2">Actualizar</button>
+      <a routerLink="/detalle-proveedores" class="btn btn-outline-secondary mt-3">Cancelar</a>
+    </form>
+  </div>
+</div>

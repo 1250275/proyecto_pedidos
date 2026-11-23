@@ -1,0 +1,87 @@
+<h1 class="h4 mb-3">Detalle de Pedidos</h1>
+
+<div class="row g-2 align-items-end mb-3">
+  <div class="col-md-4">
+    <label for="filtroPedido" class="form-label">Ver pedido</label>
+    <select id="filtroPedido" class="form-select" [(ngModel)]="filtroPedido" (ngModelChange)="cambiarFiltro()">
+      <option [ngValue]="null">Todos los pedidos</option>
+      <option *ngFor="let lista of Pedidolist" [ngValue]="lista.id_pedido">Pedido {{ lista.id_pedido }} - {{ lista.fecha_hora }}</option>
+    </select>
+  </div>
+  <div class="col-md-4" *ngIf="filtroPedido">
+    <span class="fs-5">Total del pedido: <strong>L {{ totalPedido | number: '1.2-2' }}</strong></span>
+  </div>
+</div>
+
+<div class="card mb-4" *ngIf="puedeEscribir">
+  <div class="card-body">
+    <form #f="ngForm" (ngSubmit)="AgregarValor(f)" [class.was-validated]="f.submitted" novalidate>
+      <div class="row g-3">
+        <div class="col-md-3 form-group">
+          <label for="id_pedido" class="form-label">Pedido</label>
+          <select id="id_pedido" class="form-select" [(ngModel)]="user.id_pedido" name="id_pedido" required>
+            <option [ngValue]="null" disabled>Seleccione el pedido</option>
+            <option *ngFor="let lista of Pedidolist" [ngValue]="lista.id_pedido">Pedido {{ lista.id_pedido }}</option>
+          </select>
+          <div class="invalid-feedback">Seleccione el pedido</div>
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="id_producto" class="form-label">Producto</label>
+          <select id="id_producto" class="form-select" [(ngModel)]="user.id_producto" name="id_producto"
+            (ngModelChange)="calcularSubtotal()" required>
+            <option [ngValue]="null" disabled>Seleccione el producto</option>
+            <option *ngFor="let lista of Productolist" [ngValue]="lista.id_producto">
+              {{ lista.nombre }} - L {{ lista.precio_venta | number: '1.2-2' }} (stock {{ lista.stock }})
+            </option>
+          </select>
+          <div class="invalid-feedback">Seleccione el producto</div>
+        </div>
+        <div class="col-6 col-md-2 form-group">
+          <label for="cantidad" class="form-label">Cantidad</label>
+          <input type="number" id="cantidad" [(ngModel)]="user.cantidad" name="cantidad" (ngModelChange)="calcularSubtotal()"
+            class="form-control" min="1" step="1" required />
+          <div class="invalid-feedback">Mínimo 1</div>
+        </div>
+        <div class="col-6 col-md-3 form-group">
+          <label for="sub_total" class="form-label">Subtotal</label>
+          <input type="text" id="sub_total" [ngModel]="user.sub_total != null ? 'L ' + (user.sub_total | number: '1.2-2') : ''"
+            name="sub_total_vista" class="form-control" readonly />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">Agregar</button>
+    </form>
+  </div>
+</div>
+
+<app-barra-tabla [(filtro)]="filterPost" titulo="Detalle de pedidos"></app-barra-tabla>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover" id="tabla">
+    <thead>
+      <tr>
+        <th>PEDIDO</th>
+        <th>PRODUCTO</th>
+        <th>CANTIDAD</th>
+        <th>PRECIO UNITARIO</th>
+        <th>SUBTOTAL</th>
+        <th *ngIf="puedeEscribir" class="no-export">ACCIONES</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="detallesFiltrados | filtro: filterPost : textoBusqueda as filtrados">
+      <tr *ngFor="let User of filtrados">
+        <td>{{ User.id_pedido }}</td>
+        <td>{{ producto(User.id_producto)?.nombre ?? User.id_producto }}</td>
+        <td>{{ User.cantidad }}</td>
+        <td>L {{ User.sub_total / User.cantidad | number: '1.2-2' }}</td>
+        <td>L {{ User.sub_total | number: '1.2-2' }}</td>
+        <td *ngIf="puedeEscribir" class="text-nowrap no-export">
+          <button class="btn btn-success btn-sm me-1" [routerLink]="['/detalle-pedidos/edit', User.id_pedido, User.id_producto]">Actualizar</button>
+          <button *ngIf="esAdmin" class="btn btn-warning btn-sm" (click)="EliminarData(User.id_pedido, User.id_producto)">Eliminar</button>
+        </td>
+      </tr>
+      <tr *ngIf="filtrados.length === 0">
+        <td colspan="6" class="text-center text-muted">{{ filterPost ? 'Sin resultados para la búsqueda' : 'No hay registros' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
