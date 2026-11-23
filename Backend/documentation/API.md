@@ -21,7 +21,7 @@ Backend en NodeJS (Express + MySQL) del proyecto **proyecto_pedidos**.
 - [Clientes](#clientes) — `/api/customers`
 - [Productos](#productos) — `/api/products`
 - [Proveedores](#proveedores) — `/api/suppliers`
-- [Pedidos](#pedidos) — `/api/orders`
+- [Pedidos](#pedidos) — `/api/orders` (incluye `checkout` para registrar ventas desde el carrito)
 - [Comprobantes](#comprobantes) — `/api/receipts`
 - [Reclamos](#reclamos) — `/api/complaints`
 - [Detalle de pedidos](#detalle-de-pedidos) — `/api/order-details`
@@ -1282,12 +1282,14 @@ Encabezado de los pedidos (ventas). El detalle de productos está en `order-deta
 
 **Tabla:** `pedido` · **Ruta base:** `/api/orders`
 
+El `total` del pedido y el dinero de su gaveta los mantiene el servidor: cada vez que cambia el total (al agregar, cambiar o quitar productos del detalle, o al eliminar el pedido) la diferencia se suma o se resta de `gaveta.monto_dinero`. Si la gaveta no tiene dinero suficiente para una resta, la operación se cancela con `400`.
+
 ### Esquema
 
 | Campo | Tipo | Requerido al insertar | Notas |
 |---|---|:---:|---|
 | `id_pedido` | integer | No | Autoincremental. No se envía al insertar. |
-| `total` | decimal(12,2) | No | Por defecto 0.00. Debe ser >= 0. No se calcula automáticamente: enviar la suma de los `sub_total`. |
+| `total` | decimal(12,2) | No | Lo calcula el servidor como la suma de los `sub_total` del detalle. Si se envía al insertar o actualizar, se ignora. |
 | `fecha_hora` | datetime (YYYY-MM-DD HH:MM:SS) | No | Por defecto la fecha y hora actual. |
 | `dni_cliente` | string(15) | Sí | FK → `cliente.dni_cliente`. |
 | `id_empleado` | integer | Sí | FK → `empleado.id_empleado`. |
@@ -1357,7 +1359,7 @@ curl -b cookies.txt http://localhost:3000/api/orders/1
 
 ### `POST` /api/orders
 
-Inserta un registro nuevo.
+Inserta un pedido nuevo con total 0. Los productos se agregan después con `POST /api/order-details`, o se puede registrar la venta completa con `POST /api/orders/checkout`.
 
 **Acceso:** Administrador, Cajero
 
@@ -1365,7 +1367,6 @@ Inserta un registro nuevo.
 
 ```json
 {
-  "total": 210.0,
   "dni_cliente": "0801199012345",
   "id_empleado": 2,
   "id_gaveta": 1
@@ -1388,12 +1389,12 @@ Inserta un registro nuevo.
 ```bash
 curl -b cookies.txt -X POST http://localhost:3000/api/orders \
   -H "Content-Type: application/json" \
-  -d '{"total": 210.0, "dni_cliente": "0801199012345", "id_empleado": 2, "id_gaveta": 1}'
+  -d '{"dni_cliente": "0801199012345", "id_empleado": 2, "id_gaveta": 1}'
 ```
 
 ### `POST` /api/orders/{id}
 
-Actualiza un registro. Solo se modifican los campos enviados.
+Actualiza el cliente, el empleado o la gaveta del pedido. Solo se modifican los campos enviados (`total` se ignora). Si cambia `id_gaveta`, el total del pedido se resta de la gaveta anterior y se suma a la nueva.
 
 **Acceso:** Administrador, Cajero
 
@@ -1407,7 +1408,7 @@ Actualiza un registro. Solo se modifican los campos enviados.
 
 ```json
 {
-  "total": 258.0
+  "id_gaveta": 2
 }
 ```
 
@@ -1418,6 +1419,8 @@ Actualiza un registro. Solo se modifican los campos enviados.
   "message": "Registro Actualizado"
 }
 ```
+
+**Respuesta `400`:** no se envió ningún campo, o la gaveta anterior no tiene dinero suficiente para trasladar el total.
 
 **Respuesta `404`**
 
@@ -1430,12 +1433,12 @@ Actualiza un registro. Solo se modifican los campos enviados.
 ```bash
 curl -b cookies.txt -X POST http://localhost:3000/api/orders/1 \
   -H "Content-Type: application/json" \
-  -d '{"total": 258.0}'
+  -d '{"id_gaveta": 2}'
 ```
 
 ### `DELETE` /api/orders/{id}
 
-Elimina un registro.
+Elimina el pedido, devuelve al stock los productos de su detalle y resta su total de la gaveta.
 
 **Acceso:** Administrador
 
@@ -1461,10 +1464,74 @@ Elimina un registro.
 }
 ```
 
-> **Nota:** Falla con 500 (`ER_ROW_IS_REFERENCED_2`) si el pedido tiene comprobante. Sus filas en `detalle_pedido` se eliminan en cascada.
+> **Nota:** Falla con 500 (`ER_ROW_IS_REFERENCED_2`) si el pedido tiene comprobante. Sus filas en `detalle_pedido` se eliminan en cascada y las cantidades se devuelven al stock de cada producto, todo en una transacción.
 
 ```bash
 curl -b cookies.txt -X DELETE http://localhost:3000/api/orders/1
+```
+
+### `POST` /api/orders/checkout
+
+Registra una venta completa desde el carrito de compras. En una sola transacción:
+
+1. valida que el cliente, la gaveta y los productos existan y que haya stock suficiente;
+2. crea el pedido con el empleado del usuario que inició sesión;
+3. crea el detalle con el precio de venta actual de cada producto y descuenta el stock;
+4. genera el comprobante con el siguiente número (`000-001-01-` + 8 dígitos);
+5. suma el total al `monto_dinero` de la gaveta.
+
+Si cualquier paso falla no se guarda nada. Si un producto aparece varias veces en `productos`, se suman sus cantidades.
+
+**Acceso:** Administrador, Cajero
+
+**Cuerpo de la petición**
+
+```json
+{
+  "dni_cliente": "0801199012345",
+  "id_gaveta": 1,
+  "productos": [
+    { "id_producto": 1, "cantidad": 3 },
+    { "id_producto": 2, "cantidad": 1 }
+  ]
+}
+```
+
+**Respuesta `200`**
+
+```json
+{
+  "message": "Venta registrada",
+  "id_pedido": 11,
+  "codigo_comprobante": "000-001-01-00000011",
+  "fecha_hora": "2026-11-22 17:42:28",
+  "dni_cliente": "0801199012345",
+  "id_empleado": 2,
+  "id_gaveta": 1,
+  "total": "363.00",
+  "productos": [
+    { "id_producto": 1, "nombre": "Arroz Blanco 5 lb", "cantidad": 3, "precio_unitario": "105.00", "sub_total": "315.00" },
+    { "id_producto": 2, "nombre": "Frijoles Rojos 2 lb", "cantidad": 1, "precio_unitario": "48.00", "sub_total": "48.00" }
+  ]
+}
+```
+
+**Respuesta `400`**
+
+```json
+{
+  "message": "Stock insuficiente: solo hay 80 unidades de Aceite Vegetal 1 L"
+}
+```
+
+También responde `400` si el carrito está vacío, si falta `dni_cliente` o `id_gaveta`, si una cantidad no es un entero mayor que 0, o si el cliente o la gaveta no existen.
+
+**Respuesta `404`:** un producto no existe.
+
+```bash
+curl -b cookies.txt -X POST http://localhost:3000/api/orders/checkout \
+  -H "Content-Type: application/json" \
+  -d '{"dni_cliente": "0801199012345", "id_gaveta": 1, "productos": [{"id_producto": 1, "cantidad": 3}]}'
 ```
 
 [↑ Volver al índice](#índice)
@@ -1846,6 +1913,14 @@ Productos de cada pedido (relación N a M entre `pedido` y `producto`). Llave co
 
 **Tabla:** `detalle_pedido` · **Ruta base:** `/api/order-details`
 
+Insertar, actualizar y eliminar se ejecutan en una transacción que además:
+
+- calcula `sub_total` en el servidor (no se acepta el enviado por el cliente);
+- descuenta, ajusta o devuelve el `stock` del producto;
+- recalcula `pedido.total` como la suma de los `sub_total` del pedido y suma o resta la diferencia en la gaveta del pedido.
+
+Si cualquier paso falla no se guarda nada.
+
 ### Esquema
 
 | Campo | Tipo | Requerido al insertar | Notas |
@@ -1853,7 +1928,7 @@ Productos de cada pedido (relación N a M entre `pedido` y `producto`). Llave co
 | `id_pedido` | integer | Sí | Parte de la llave. FK → `pedido.id_pedido`. |
 | `id_producto` | integer | Sí | Parte de la llave. FK → `producto.id_producto`. |
 | `cantidad` | integer | Sí | Debe ser > 0. |
-| `sub_total` | decimal(12,2) | Sí | Debe ser >= 0. Se envía calculado (`cantidad × precio_venta`). |
+| `sub_total` | decimal(12,2) | No | Lo calcula el servidor: `cantidad × precio_venta` al insertar; al actualizar se conserva el precio unitario original. |
 
 ### `GET` /api/order-details
 
@@ -1916,7 +1991,7 @@ curl -b cookies.txt http://localhost:3000/api/order-details/1/1
 
 ### `POST` /api/order-details
 
-Inserta un registro nuevo.
+Agrega un producto al pedido, descuenta su stock y recalcula el total del pedido.
 
 **Acceso:** Administrador, Cajero
 
@@ -1926,8 +2001,7 @@ Inserta un registro nuevo.
 {
   "id_pedido": 11,
   "id_producto": 1,
-  "cantidad": 2,
-  "sub_total": 210.0
+  "cantidad": 2
 }
 ```
 
@@ -1935,21 +2009,34 @@ Inserta un registro nuevo.
 
 ```json
 {
-  "message": "Registro Guardado"
+  "message": "Registro Guardado",
+  "sub_total": "210.00"
 }
 ```
 
-**Respuesta `500`:** falta un campo requerido, llave duplicada, llave foránea inexistente o no se cumple una restricción.
+**Respuesta `400`**
+
+```json
+{
+  "message": "Stock insuficiente: solo hay 1 unidades de Arroz Blanco 5 lb"
+}
+```
+
+También responde `400` si falta `id_pedido` o `id_producto`, o si `cantidad` no es un entero mayor que 0.
+
+**Respuesta `404`:** el producto no existe.
+
+**Respuesta `500`:** el producto ya está en el pedido (llave duplicada) o el pedido no existe.
 
 ```bash
 curl -b cookies.txt -X POST http://localhost:3000/api/order-details \
   -H "Content-Type: application/json" \
-  -d '{"id_pedido": 11, "id_producto": 1, "cantidad": 2, "sub_total": 210.0}'
+  -d '{"id_pedido": 11, "id_producto": 1, "cantidad": 2}'
 ```
 
 ### `POST` /api/order-details/{orderId}/{productId}
 
-Actualiza un registro. Solo se modifican los campos enviados.
+Cambia la cantidad. El stock se ajusta por la diferencia (si sube se descuenta, si baja se devuelve) y el `sub_total` se recalcula con el precio unitario con que se agregó el producto.
 
 **Acceso:** Administrador, Cajero
 
@@ -1964,8 +2051,7 @@ Actualiza un registro. Solo se modifican los campos enviados.
 
 ```json
 {
-  "cantidad": 3,
-  "sub_total": 315.0
+  "cantidad": 3
 }
 ```
 
@@ -1973,9 +2059,12 @@ Actualiza un registro. Solo se modifican los campos enviados.
 
 ```json
 {
-  "message": "Registro Actualizado"
+  "message": "Registro Actualizado",
+  "sub_total": "315.00"
 }
 ```
+
+**Respuesta `400`:** `cantidad` no es un entero mayor que 0, o el aumento supera el stock disponible.
 
 **Respuesta `404`**
 
@@ -1988,12 +2077,12 @@ Actualiza un registro. Solo se modifican los campos enviados.
 ```bash
 curl -b cookies.txt -X POST http://localhost:3000/api/order-details/1/1 \
   -H "Content-Type: application/json" \
-  -d '{"cantidad": 3, "sub_total": 315.0}'
+  -d '{"cantidad": 3}'
 ```
 
 ### `DELETE` /api/order-details/{orderId}/{productId}
 
-Elimina un registro.
+Quita el producto del pedido, devuelve su cantidad al stock y recalcula el total del pedido.
 
 **Acceso:** Administrador
 

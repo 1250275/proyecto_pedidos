@@ -16,6 +16,7 @@ const canDelete = authorize(ROLES.ADMIN);
 // Rutas de la tabla pedido
 router.get('/', orderController.list);                       // listar todos (todos los roles)
 router.post('/', canWrite, orderController.save);            // insertar
+router.post('/checkout', canWrite, orderController.checkout); // registrar una venta desde el carrito (antes de /:id)
 router.delete('/:id', canDelete, orderController.delete);    // eliminar por id
 router.get('/:id', orderController.edit);                    // obtener por id (todos los roles)
 router.post('/:id', canWrite, orderController.update);       // actualizar por id
