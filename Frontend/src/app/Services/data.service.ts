@@ -6,7 +6,7 @@ import { Observable, throwError, catchError } from 'rxjs';
   providedIn: 'root',
 })
 export class DataService {
-  API_URI = 'http://localhost:3000/api';
+  API_URI = 'http://127.0.0.1:3000/api';
 
   constructor(private http: HttpClient) {}
 
