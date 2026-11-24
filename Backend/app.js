@@ -12,8 +12,11 @@ const app = express();
 
 // CORS: se permite solo el frontend y con credenciales para que viaje la cookie del token
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
-    credentials: true
+  origin: [
+    'http://127.0.0.1:4200',
+    'http://localhost:4200',
+  ],
+  credentials: true
 }));
 
 // rutas backend

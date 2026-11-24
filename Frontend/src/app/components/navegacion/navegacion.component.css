@@ -1,10 +1,62 @@
-.menu-btn {
-  --mat-button-text-label-text-color: #fff;
-  justify-content: flex-start;
+:host { display: block; }
+
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  transition: width .2s ease, transform .25s ease;
+  z-index: 1040;
+}
+.sidebar.colapsado { width: 72px; }
+
+.sidebar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem; border-bottom: 1px solid rgba(255,255,255,.2);
+}
+.brand { color: #fff; text-decoration: none; font-weight: 700; font-size: 1.15rem;
+         display: flex; align-items: center; gap: .5rem; }
+
+.sidebar-body { flex: 1; overflow-y: auto; padding: .5rem; }
+.sidebar-footer { padding: .5rem; border-top: 1px solid rgba(255,255,255,.2); }
+
+.item {
+  width: 100%; display: flex; align-items: center; gap: .75rem;
+  padding: .65rem .75rem; margin-bottom: 2px;
+  background: transparent; border: 0; border-radius: .5rem;
+  color: #fff; text-decoration: none; cursor: pointer;
+}
+.item:hover, .subitem:hover { background: rgba(255,255,255,.15); }
+.sidebar.colapsado .item { justify-content: center; }
+
+.submenu { margin: 0 0 .5rem 1.25rem; padding-left: .75rem; border-left: 2px solid rgba(255,255,255,.3); }
+.subitem {
+  display: block; padding: .45rem .75rem; border-radius: .4rem;
+  color: rgba(255,255,255,.9); text-decoration: none; font-size: .92rem;
 }
 
+.activo { background: rgba(255,255,255,.25) !important; font-weight: 600; }
+
+.flecha { transition: transform .2s; }
+.flecha.girada { transform: rotate(180deg); }
+
+.usuario { display: flex; align-items: center; gap: .6rem; padding: .5rem .75rem; }
+
+.btn-icono, .btn-hamburguesa {
+  background: transparent; border: 0; color: #fff; cursor: pointer;
+  align-items: center; justify-content: center;
+}
+
+/* Móvil: panel lateral que se desliza */
 @media (max-width: 991.98px) {
-  .navbar-nav {
-    padding: 0.5rem 0;
+  .sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); width: 260px !important; }
+  .sidebar.abierto { transform: translateX(0); }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1039; }
+  .btn-hamburguesa {
+    position: fixed; top: .6rem; left: .6rem; z-index: 1030;
+    display: inline-flex; background: #a50f1a; border-radius: .5rem; padding: .35rem;
   }
 }

@@ -1,48 +1,62 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-principal">
-  <div class="container">
-    <a routerLink="/inicio" class="navbar-brand">PEDIDOS</a>
+<!-- Botón hamburguesa, solo en pantallas pequeñas -->
+<button class="btn-hamburguesa d-lg-none" (click)="menuAbierto = true" aria-label="Abrir menú">
+  <mat-icon>menu</mat-icon>
+</button>
 
-    <button
-      class="navbar-toggler"
-      type="button"
-      aria-controls="menuPrincipal"
-      [attr.aria-expanded]="menuAbierto"
-      aria-label="Mostrar menú"
-      (click)="menuAbierto = !menuAbierto"
-    >
-      <span class="navbar-toggler-icon"></span>
+<!-- Fondo oscuro detrás del panel en móvil -->
+<div class="overlay d-lg-none" *ngIf="menuAbierto" (click)="cerrarMovil()"></div>
+
+<aside class="sidebar bg-principal" [class.colapsado]="colapsado" [class.abierto]="menuAbierto">
+
+  <!-- Encabezado -->
+  <div class="sidebar-header">
+    <a routerLink="/inicio" class="brand" (click)="cerrarMovil()">
+      <mat-icon>shopping_bag</mat-icon>
+      <span *ngIf="!colapsado">PEDIDOS</span>
+    </a>
+    <button class="btn-icono d-none d-lg-inline-flex" (click)="colapsado = !colapsado" aria-label="Contraer menú">
+      <mat-icon>{{ colapsado ? 'chevron_right' : 'chevron_left' }}</mat-icon>
     </button>
-
-    <div class="collapse navbar-collapse" id="menuPrincipal" [class.show]="menuAbierto">
-      <div class="navbar-nav me-auto">
-        <ng-container *ngFor="let grupo of grupos">
-          <button mat-button class="menu-btn" [matMenuTriggerFor]="submenu">
-            {{ grupo.titulo }}
-            <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
-          </button>
-          <mat-menu #submenu="matMenu">
-            <a mat-menu-item *ngFor="let op of grupo.opciones" [routerLink]="op.ruta" (click)="menuAbierto = false">
-              {{ op.titulo }}
-            </a>
-          </mat-menu>
-        </ng-container>
-      </div>
-
-      <button mat-button class="menu-btn" [matMenuTriggerFor]="menuUsuario">
-        <mat-icon>account_circle</mat-icon>
-        {{ auth.usuario?.nombre_usuario }}
-        <span class="badge bg-light text-dark ms-1">{{ auth.usuario?.rol }}</span>
-      </button>
-      <mat-menu #menuUsuario="matMenu" xPosition="before">
-        <a mat-menu-item routerLink="/inicio" (click)="menuAbierto = false">
-          <mat-icon>home</mat-icon>
-          <span>Inicio</span>
-        </a>
-        <button mat-menu-item (click)="CerrarSesion()">
-          <mat-icon>logout</mat-icon>
-          <span>Cerrar sesión</span>
-        </button>
-      </mat-menu>
-    </div>
   </div>
-</nav>
+
+  <!-- Menú -->
+  <div class="sidebar-body">
+    <a routerLink="/inicio" routerLinkActive="activo" class="item" (click)="cerrarMovil()" title="Inicio">
+      <mat-icon>home</mat-icon>
+      <span *ngIf="!colapsado">Inicio</span>
+    </a>
+
+    <ng-container *ngFor="let grupo of grupos">
+      <button class="item" (click)="toggleGrupo(grupo.titulo)" [title]="grupo.titulo">
+        <mat-icon>{{ icono(grupo.titulo) }}</mat-icon>
+        <span *ngIf="!colapsado" class="flex-grow-1 text-start">{{ grupo.titulo }}</span>
+        <mat-icon *ngIf="!colapsado" class="flecha" [class.girada]="abiertos[grupo.titulo]">expand_more</mat-icon>
+      </button>
+
+      <div class="submenu" *ngIf="abiertos[grupo.titulo] && !colapsado">
+        <a *ngFor="let op of grupo.opciones"
+           [routerLink]="op.ruta"
+           routerLinkActive="activo"
+           class="subitem"
+           (click)="cerrarMovil()">
+          {{ op.titulo }}
+        </a>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Usuario -->
+  <div class="sidebar-footer">
+    <div class="usuario" *ngIf="!colapsado">
+      <mat-icon>account_circle</mat-icon>
+      <div class="lh-sm">
+        <div class="fw-semibold">{{ auth.usuario?.nombre_usuario }}</div>
+        <span class="badge bg-light text-dark">{{ auth.usuario?.rol }}</span>
+      </div>
+    </div>
+    <button class="item" (click)="CerrarSesion()" title="Cerrar sesión">
+      <mat-icon>logout</mat-icon>
+      <span *ngIf="!colapsado">Cerrar sesión</span>
+    </button>
+  </div>
+</aside>
