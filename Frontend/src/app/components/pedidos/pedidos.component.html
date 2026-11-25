@@ -1,76 +1,130 @@
-<h1 class="h4 mb-3">Registro de Pedidos</h1>
+<div class="pagina">
 
-<div class="card mb-4" *ngIf="puedeEscribir">
-  <div class="card-body">
+  <header class="encabezado">
+    <div>
+      <p class="subtitulo">Ventas</p>
+      <h1>Registro de Pedidos</h1>
+    </div>
+    <div class="resumen">
+      <mat-icon>receipt_long</mat-icon>
+      <div>
+        <strong>{{ TUser.length }}</strong>
+        <span>pedidos registrados</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Formulario -->
+  <section class="tarjeta" *ngIf="puedeEscribir">
+    <h2 class="titulo-seccion">Nuevo pedido</h2>
+
     <form #f="ngForm" (ngSubmit)="AgregarValor(f)" [class.was-validated]="f.submitted" novalidate>
-      <div class="row g-3">
-        <div class="col-md-4 form-group">
+      <div class="form-rejilla">
+
+        <div class="campo">
           <label for="dni_cliente" class="form-label">Cliente</label>
-          <select id="dni_cliente" class="form-select" [(ngModel)]="user.dni_cliente" name="dni_cliente" required>
-            <option [ngValue]="null" disabled>Seleccione el cliente</option>
-            <option *ngFor="let lista of Clientelist" [ngValue]="lista.dni_cliente">
-              {{ lista.nombre }} {{ lista.apellido }} ({{ lista.dni_cliente }})
-            </option>
-          </select>
+          <div class="control">
+            <mat-icon>person</mat-icon>
+            <select id="dni_cliente" class="form-select" [(ngModel)]="user.dni_cliente" name="dni_cliente" required>
+              <option [ngValue]="null" disabled>Seleccione el cliente</option>
+              <option *ngFor="let lista of Clientelist" [ngValue]="lista.dni_cliente">
+                {{ lista.nombre }} {{ lista.apellido }} ({{ lista.dni_cliente }})
+              </option>
+            </select>
+          </div>
           <div class="invalid-feedback">Seleccione el cliente</div>
         </div>
-        <div class="col-md-4 form-group">
+
+        <div class="campo">
           <label for="id_empleado" class="form-label">Empleado</label>
-          <select id="id_empleado" class="form-select" [(ngModel)]="user.id_empleado" name="id_empleado" required>
-            <option [ngValue]="null" disabled>Seleccione el empleado</option>
-            <option *ngFor="let lista of Empleadolist" [ngValue]="lista.id_empleado">
-              {{ lista.nombre }} {{ lista.apellidos }}
-            </option>
-          </select>
+          <div class="control">
+            <mat-icon>badge</mat-icon>
+            <select id="id_empleado" class="form-select" [(ngModel)]="user.id_empleado" name="id_empleado" required>
+              <option [ngValue]="null" disabled>Seleccione el empleado</option>
+              <option *ngFor="let lista of Empleadolist" [ngValue]="lista.id_empleado">
+                {{ lista.nombre }} {{ lista.apellidos }}
+              </option>
+            </select>
+          </div>
           <div class="invalid-feedback">Seleccione el empleado</div>
         </div>
-        <div class="col-md-4 form-group">
+
+        <div class="campo">
           <label for="id_caja" class="form-label">Caja</label>
-          <select id="id_caja" class="form-select" [(ngModel)]="user.id_caja" name="id_caja" required>
-            <option [ngValue]="null" disabled>Seleccione la caja</option>
-            <option *ngFor="let lista of Cajalist" [ngValue]="lista.id_caja">Caja {{ lista.id_caja }}</option>
-          </select>
+          <div class="control">
+            <mat-icon>point_of_sale</mat-icon>
+            <select id="id_caja" class="form-select" [(ngModel)]="user.id_caja" name="id_caja" required>
+              <option [ngValue]="null" disabled>Seleccione la caja</option>
+              <option *ngFor="let lista of Cajalist" [ngValue]="lista.id_caja">Caja {{ lista.id_caja }}</option>
+            </select>
+          </div>
           <div class="invalid-feedback">Seleccione la caja</div>
         </div>
+
       </div>
-      <p class="form-text mb-0 mt-2">El total se calcula al agregar productos en el detalle del pedido y se suma a la caja elegida.</p>
-      <button type="submit" class="btn btn-primary mt-3">Agregar</button>
+
+      <div class="form-pie">
+        <p class="ayuda">
+          <mat-icon>info</mat-icon>
+          El total se calcula al agregar productos en el detalle del pedido y se suma a la caja elegida.
+        </p>
+        <button type="submit" class="btn-principal">
+          <mat-icon>add</mat-icon>
+          Agregar pedido
+        </button>
+      </div>
     </form>
-  </div>
-</div>
+  </section>
 
-<app-barra-tabla [(filtro)]="filterPost" titulo="Pedidos"></app-barra-tabla>
+  <!-- Listado -->
+  <section class="tarjeta">
+    <app-barra-tabla [(filtro)]="filterPost" titulo="Pedidos"></app-barra-tabla>
 
-<div class="table-responsive">
-  <table class="table table-bordered table-hover" id="tabla">
-    <thead>
-      <tr>
-        <th>NO</th>
-        <th>FECHA Y HORA</th>
-        <th>CLIENTE</th>
-        <th>EMPLEADO</th>
-        <th>CAJA</th>
-        <th>TOTAL</th>
-        <th class="no-export">ACCIONES</th>
-      </tr>
-    </thead>
-    <tbody *ngIf="TUser | filtro: filterPost : textoBusqueda as filtrados">
-      <tr *ngFor="let User of filtrados">
-        <td>{{ User.id_pedido }}</td>
-        <td class="text-nowrap">{{ User.fecha_hora }}</td>
-        <td>{{ nombreCliente(User.dni_cliente) }}</td>
-        <td>{{ nombreEmpleado(User.id_empleado) }}</td>
-        <td>{{ User.id_caja }}</td>
-        <td>L {{ User.total | number: '1.2-2' }}</td>
-        <td class="text-nowrap no-export">
-          <button class="btn btn-primary btn-sm me-1" routerLink="/detalle-pedidos" [queryParams]="{ pedido: User.id_pedido }">Detalle</button>
-          <button *ngIf="puedeEscribir" class="btn btn-success btn-sm me-1" [routerLink]="['/pedidos/edit', User.id_pedido]">Actualizar</button>
-          <button *ngIf="esAdmin" class="btn btn-warning btn-sm" (click)="EliminarData(User.id_pedido)">Eliminar</button>
-        </td>
-      </tr>
-      <tr *ngIf="filtrados.length === 0">
-        <td colspan="7" class="text-center text-muted">{{ filterPost ? 'Sin resultados para la búsqueda' : 'No hay registros' }}</td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="tabla-contenedor">
+      <table class="tabla" id="tabla">
+        <thead>
+          <tr>
+            <th>NO</th>
+            <th>FECHA Y HORA</th>
+            <th>CLIENTE</th>
+            <th>EMPLEADO</th>
+            <th>CAJA</th>
+            <th class="der">TOTAL</th>
+            <th class="no-export">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="TUser | filtro: filterPost : textoBusqueda as filtrados">
+          <tr *ngFor="let User of filtrados">
+            <td><span class="chip">{{ User.id_pedido }}</span></td>
+            <td class="tenue text-nowrap">{{ User.fecha_hora }}</td>
+            <td class="fuerte">{{ nombreCliente(User.dni_cliente) }}</td>
+            <td>{{ nombreEmpleado(User.id_empleado) }}</td>
+            <td>{{ User.id_caja }}</td>
+            <td class="der fuerte">L {{ User.total | number: '1.2-2' }}</td>
+            <td class="acciones no-export">
+              <button class="btn-accion" routerLink="/detalle-pedidos" [queryParams]="{ pedido: User.id_pedido }">
+                <mat-icon>list</mat-icon>
+                <span>Detalle</span>
+              </button>
+              <button *ngIf="puedeEscribir" class="btn-accion" [routerLink]="['/pedidos/edit', User.id_pedido]">
+                <mat-icon>edit</mat-icon>
+                <span>Actualizar</span>
+              </button>
+              <button *ngIf="esAdmin" class="btn-accion peligro" (click)="EliminarData(User.id_pedido)" title="Eliminar">
+                <mat-icon>delete_outline</mat-icon>
+                <span>Eliminar</span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filtrados.length === 0">
+            <td colspan="7" class="vacio">
+              <mat-icon>inbox</mat-icon>
+              <div>{{ filterPost ? 'Sin resultados para la búsqueda' : 'No hay registros' }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
 </div>
