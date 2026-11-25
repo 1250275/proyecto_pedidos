@@ -16,6 +16,7 @@ export class LoginComponent {
   };
   mensajeError = '';
   cargando = false;
+  mostrarContrasena = false; // ← NUEVA
 
   constructor(private auth: AuthService, private router: Router) {}
 
