@@ -1,22 +1,48 @@
-<div class="mb-4">
-  <h1 class="h3 mb-1">Bienvenido, {{ auth.usuario?.nombre }} {{ auth.usuario?.apellidos }}</h1>
-  <p class="text-muted mb-0">
-    Rol: <span class="badge bg-principal">{{ auth.usuario?.rol }}</span>
-  </p>
-</div>
-
-<div class="row g-3">
-  <div class="col-12 col-md-6 col-lg-4" *ngFor="let grupo of grupos">
-    <div class="card h-100">
-      <div class="card-header fw-semibold">{{ grupo.titulo }}</div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let op of grupo.opciones">
-          <a [routerLink]="op.ruta">{{ op.titulo }}</a>
-          <span class="badge" [ngClass]="puedeEscribir(op.escribir) ? 'text-bg-success' : 'text-bg-light border'">
-            {{ puedeEscribir(op.escribir) ? 'Editar' : 'Solo consulta' }}
-          </span>
-        </li>
-      </ul>
+<div class="inicio">
+  <!-- Bienvenida -->
+  <header class="bienvenida">
+    <div>
+      <p class="fecha mb-1">{{ fechaHoy }}</p>
+      <h1 class="h3 mb-1">{{ saludo }}, {{ auth.usuario?.nombre }} {{ auth.usuario?.apellidos }}</h1>
+      <span class="badge bg-principal">{{ auth.usuario?.rol }}</span>
     </div>
+
+    <a *ngIf="nuevaVenta" [routerLink]="nuevaVenta.ruta" class="btn btn-cta">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 5v14 M5 12h14" />
+      </svg>
+      Nueva venta
+    </a>
+  </header>
+
+  <!-- Grupos de módulos -->
+  <div class="row g-4">
+    <section class="col-12 col-md-6 col-xl-4" *ngFor="let grupo of grupos; let i = index">
+      <div class="grupo acento-{{ i % 3 }}" [style.animation-delay.ms]="i * 80">
+        <h2 class="grupo-titulo">{{ grupo.titulo }}</h2>
+
+        <a *ngFor="let op of grupo.opciones" [routerLink]="op.ruta" class="modulo">
+          <span class="modulo-icono" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path [attr.d]="icono(op.titulo)" />
+            </svg>
+          </span>
+
+          <span class="modulo-texto">
+            <span class="modulo-nombre">{{ op.titulo }}</span>
+            <span class="modulo-desc">{{ descripcion(op.titulo) }}</span>
+          </span>
+
+          <span *ngIf="!puedeEscribir(op.escribir)" class="badge text-bg-light border">Solo consulta</span>
+
+          <svg class="flecha" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </a>
+      </div>
+    </section>
   </div>
 </div>

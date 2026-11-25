@@ -1,4 +1,4 @@
-<h1 class="h4 mb-3">Registro de Gavetas</h1>
+<h1 class="h4 mb-3">Registro de Cajas</h1>
 
 <div class="card mb-4" *ngIf="puedeEscribir">
   <div class="card-body">
@@ -29,7 +29,7 @@
     </thead>
     <tbody *ngIf="TUser | filtro: filterPost as filtrados">
       <tr *ngFor="let User of filtrados">
-        <td>{{ User.id_gaveta }}</td>
+        <td>{{ User.id_caja }}</td>
         <td>L {{ User.monto_dinero | number: '1.2-2' }}</td>
         <td *ngIf="puedeEscribir" class="text-nowrap no-export">
           <button class="btn btn-success btn-sm me-1" [routerLink]="['/gavetas/edit', User.id_gaveta]">Actualizar</button>

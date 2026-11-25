@@ -5,10 +5,10 @@ import { DataService } from '../../Services/data.service';
 import { AuthService } from '../../Services/auth.service';
 
 @Component({
-  selector: 'app-gavetas',
+  selector: 'app-cajas',
   standalone: false,
-  templateUrl: './gavetas.component.html',
-  styleUrl: './gavetas.component.css',
+  templateUrl: './cajas.component.html',
+  styleUrl: './cajas.component.css',
 })
 export class GavetasComponent implements OnInit {
   TUser: any = [];
@@ -23,7 +23,7 @@ export class GavetasComponent implements OnInit {
   constructor(private Data: DataService, private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.puedeEscribir = this.auth.puedeEscribir('/gavetas');
+    this.puedeEscribir = this.auth.puedeEscribir('/cajas');
     this.esAdmin = this.auth.esAdmin;
     this.getUser();
   }
@@ -49,7 +49,7 @@ export class GavetasComponent implements OnInit {
   }
 
   EliminarData(id: number) {
-    if (!confirm('¿Desea eliminar la gaveta ' + id + '?')) return;
+    if (!confirm('¿Desea eliminar la caja ' + id + '?')) return;
     this.Data.delete(id, '/drawers').subscribe({
       next: () => {
         alert('Registro Eliminado');

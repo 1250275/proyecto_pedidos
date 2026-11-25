@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { InicioComponent } from './components/inicio/inicio.component';
-import { GavetasComponent } from './components/gavetas/gavetas.component';
+import { GavetasComponent } from './components/cajas/cajas.component';
 import { GavetasEditComponent } from './components/gavetas-edit/gavetas-edit.component';
 import { EmpleadosComponent } from './components/empleados/empleados.component';
 import { EmpleadosEditComponent } from './components/empleados-edit/empleados-edit.component';
