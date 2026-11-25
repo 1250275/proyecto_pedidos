@@ -20,7 +20,40 @@
 .brand { color: #fff; text-decoration: none; font-weight: 700; font-size: 1.15rem;
          display: flex; align-items: center; gap: .5rem; }
 
-.sidebar-body { flex: 1; overflow-y: auto; padding: .5rem; }
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: .5rem;
+
+  /* FIREFOX: */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.sidebar-body:hover {
+  scrollbar-color: rgba(255,255,255,.35) transparent;
+}
+
+/* CHROME / EDGE / SAFARI / OPERA:*/
+.sidebar-body::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-body::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+  transition: background .2s ease;
+}
+.sidebar-body:hover::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.35);
+}
+.sidebar-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,.6);
+}
+
+/* MÓVIL (Android / iOS): */
+
 .sidebar-footer { padding: .5rem; border-top: 1px solid rgba(255,255,255,.2); }
 
 .item {
