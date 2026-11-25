@@ -41,33 +41,33 @@ controller.save = (req, res) => {
     });
 };
 
-// Actualizar un registro: si cambia la gaveta, el total del pedido pasa a la nueva gaveta
+// Actualizar un registro: si cambia la caja, el total del pedido pasa a la nueva caja
 controller.update = (req, res) => {
     const { id } = req.params;
     const { total, id_pedido, ...newOrder } = req.body;
     if (Object.keys(newOrder).length === 0) {
-        return res.status(400).json({ message: "Debe enviar al menos uno de: dni_cliente, id_empleado, id_gaveta" });
+        return res.status(400).json({ message: "Debe enviar al menos uno de: dni_cliente, id_empleado, id_caja" });
     }
 
     runTransaction(req, res, async (db) => {
-        const [orders] = await db.query('select total, id_gaveta from pedido where id_pedido = ? for update', [id]);
+        const [orders] = await db.query('select total, id_caja from pedido where id_pedido = ? for update', [id]);
         if (orders.length === 0) throw new HttpError(404, "Registro no encontrado");
         const order = orders[0];
         await db.query('update pedido set ? where id_pedido = ?', [newOrder, id]);
-        if (newOrder.id_gaveta !== undefined && Number(newOrder.id_gaveta) !== order.id_gaveta) {
-            await adjustDrawer(db, order.id_gaveta, -order.total);
-            await adjustDrawer(db, newOrder.id_gaveta, order.total);
+        if (newOrder.id_caja !== undefined && Number(newOrder.id_caja) !== order.id_caja) {
+            await adjustDrawer(db, order.id_caja, -order.total);
+            await adjustDrawer(db, newOrder.id_caja, order.total);
         }
         return { message: "Registro Actualizado" };
     });
 };
 
-// Eliminar un registro: devuelve el stock de sus productos y resta su total de la gaveta
+// Eliminar un registro: devuelve el stock de sus productos y resta su total de la caja
 controller.delete = (req, res) => {
     const { id } = req.params;
 
     runTransaction(req, res, async (db) => {
-        const [orders] = await db.query('select total, id_gaveta from pedido where id_pedido = ? for update', [id]);
+        const [orders] = await db.query('select total, id_caja from pedido where id_pedido = ? for update', [id]);
         if (orders.length === 0) throw new HttpError(404, "Registro no encontrado");
         await db.query(
             'update producto p join detalle_pedido d on d.id_producto = p.id_producto ' +
@@ -75,16 +75,16 @@ controller.delete = (req, res) => {
             [id]
         );
         await db.query('delete from pedido where id_pedido = ?', [id]);
-        await adjustDrawer(db, orders[0].id_gaveta, -orders[0].total);
+        await adjustDrawer(db, orders[0].id_caja, -orders[0].total);
         return { message: "Registro Eliminado" };
     });
 };
 
-// Registrar una venta completa desde el carrito: pedido, detalle, stock, comprobante y gaveta
+// Registrar una venta completa desde el carrito: pedido, detalle, stock, comprobante y caja
 controller.checkout = (req, res) => {
-    const { dni_cliente, id_gaveta, productos } = req.body;
-    if (!dni_cliente || !id_gaveta) {
-        return res.status(400).json({ message: "Debe enviar dni_cliente e id_gaveta" });
+    const { dni_cliente, id_caja, productos } = req.body;
+    if (!dni_cliente || !id_caja) {
+        return res.status(400).json({ message: "Debe enviar dni_cliente e id_caja" });
     }
     if (!Array.isArray(productos) || productos.length === 0) {
         return res.status(400).json({ message: "El carrito está vacío" });
@@ -106,8 +106,8 @@ controller.checkout = (req, res) => {
 
         const [customers] = await db.query('select dni_cliente from cliente where dni_cliente = ?', [dni_cliente]);
         if (customers.length === 0) throw new HttpError(400, "Cliente no encontrado");
-        const [drawers] = await db.query('select id_gaveta from gaveta where id_gaveta = ? for update', [id_gaveta]);
-        if (drawers.length === 0) throw new HttpError(400, "Gaveta no encontrada");
+        const [drawers] = await db.query('select id_caja from caja where id_caja = ? for update', [id_caja]);
+        if (drawers.length === 0) throw new HttpError(400, "Caja no encontrada");
 
         const [products] = await db.query(
             'select id_producto, nombre, precio_venta, stock from producto where id_producto in (?) for update',
@@ -125,7 +125,7 @@ controller.checkout = (req, res) => {
         });
         const total = lines.reduce((sum, line) => sum + Number(line.sub_total), 0).toFixed(2);
 
-        const [order] = await db.query('insert into pedido set ?', [{ total, dni_cliente, id_empleado, id_gaveta }]);
+        const [order] = await db.query('insert into pedido set ?', [{ total, dni_cliente, id_empleado, id_caja }]);
         const id_pedido = order.insertId;
         await db.query(
             'insert into detalle_pedido (id_pedido, id_producto, cantidad, sub_total) values ?',
@@ -142,7 +142,7 @@ controller.checkout = (req, res) => {
         const codigo_comprobante = RECEIPT_PREFIX + String(Number(last[0].ultimo || 0) + 1).padStart(8, '0');
         await db.query('insert into comprobante set ?', [{ codigo_comprobante, id_pedido }]);
 
-        await adjustDrawer(db, id_gaveta, total);
+        await adjustDrawer(db, id_caja, total);
 
         const [saved] = await db.query('select fecha_hora from pedido where id_pedido = ?', [id_pedido]);
         return {
@@ -152,7 +152,7 @@ controller.checkout = (req, res) => {
             fecha_hora: saved[0].fecha_hora,
             dni_cliente,
             id_empleado,
-            id_gaveta: Number(id_gaveta),
+            id_caja: Number(id_caja),
             total,
             productos: lines
         };

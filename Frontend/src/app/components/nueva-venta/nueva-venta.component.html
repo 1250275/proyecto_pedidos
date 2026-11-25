@@ -90,10 +90,10 @@
           </datalist>
         </div>
         <div class="mb-3">
-          <label for="gaveta" class="form-label">Gaveta</label>
-          <select id="gaveta" class="form-select" name="gaveta" [(ngModel)]="carrito.id_gaveta" (ngModelChange)="elegirGaveta()">
-            <option [ngValue]="null" disabled>Seleccione la gaveta</option>
-            <option *ngFor="let g of Gavetalist" [ngValue]="g.id_gaveta">Gaveta {{ g.id_gaveta }}</option>
+          <label for="caja" class="form-label">Caja</label>
+          <select id="caja" class="form-select" name="caja" [(ngModel)]="carrito.id_caja" (ngModelChange)="elegirCaja()">
+            <option [ngValue]="null" disabled>Seleccione la caja</option>
+            <option *ngFor="let g of Cajalist" [ngValue]="g.id_caja">Caja {{ g.id_caja }}</option>
           </select>
         </div>
 

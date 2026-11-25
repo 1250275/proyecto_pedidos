@@ -56,7 +56,6 @@ export class InicioComponent implements OnInit {
     'Detalle de proveedores': 'M4 4h16v6H4z M4 14h16v6H4z M8 7h.01 M8 17h.01',
     'Empleados': 'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z M8 11a2 2 0 1 0 0-.01 M5.5 16c.5-1.5 4.5-1.5 5 0 M14 10h4 M14 14h4',
     'Cajas': 'M5 3h14v6H5z M3 9h18v12H3z M7 14h2 M11 14h2 M15 14h2 M7 18h10',
-    'Gavetas': 'M5 3h14v6H5z M3 9h18v12H3z M7 14h2 M11 14h2 M15 14h2 M7 18h10',
     'Usuarios': 'M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z M12 11a2 2 0 1 0 0-.01 M8.5 16c.7-2 6.3-2 7 0',
   };
 
@@ -72,7 +71,6 @@ export class InicioComponent implements OnInit {
     'Detalle de proveedores': 'Precios por proveedor',
     'Empleados': 'Personal de la tienda',
     'Cajas': 'Dinero en caja',
-    'Gavetas': 'Dinero en caja',
     'Usuarios': 'Accesos y roles',
   };
 

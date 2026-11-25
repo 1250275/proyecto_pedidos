@@ -25,15 +25,15 @@
           <div class="invalid-feedback">Seleccione el empleado</div>
         </div>
         <div class="col-md-4 form-group">
-          <label for="id_gaveta" class="form-label">Gaveta</label>
-          <select id="id_gaveta" class="form-select" [(ngModel)]="user.id_gaveta" name="id_gaveta" required>
-            <option [ngValue]="null" disabled>Seleccione la gaveta</option>
-            <option *ngFor="let lista of Gavetalist" [ngValue]="lista.id_gaveta">Gaveta {{ lista.id_gaveta }}</option>
+          <label for="id_caja" class="form-label">Caja</label>
+          <select id="id_caja" class="form-select" [(ngModel)]="user.id_caja" name="id_caja" required>
+            <option [ngValue]="null" disabled>Seleccione la caja</option>
+            <option *ngFor="let lista of Cajalist" [ngValue]="lista.id_caja">Caja {{ lista.id_caja }}</option>
           </select>
-          <div class="invalid-feedback">Seleccione la gaveta</div>
+          <div class="invalid-feedback">Seleccione la caja</div>
         </div>
       </div>
-      <p class="form-text mb-0 mt-2">El total se calcula al agregar productos en el detalle del pedido y se suma a la gaveta elegida.</p>
+      <p class="form-text mb-0 mt-2">El total se calcula al agregar productos en el detalle del pedido y se suma a la caja elegida.</p>
       <button type="submit" class="btn btn-primary mt-3">Agregar</button>
     </form>
   </div>
@@ -49,7 +49,7 @@
         <th>FECHA Y HORA</th>
         <th>CLIENTE</th>
         <th>EMPLEADO</th>
-        <th>GAVETA</th>
+        <th>CAJA</th>
         <th>TOTAL</th>
         <th class="no-export">ACCIONES</th>
       </tr>
@@ -60,7 +60,7 @@
         <td class="text-nowrap">{{ User.fecha_hora }}</td>
         <td>{{ nombreCliente(User.dni_cliente) }}</td>
         <td>{{ nombreEmpleado(User.id_empleado) }}</td>
-        <td>{{ User.id_gaveta }}</td>
+        <td>{{ User.id_caja }}</td>
         <td>L {{ User.total | number: '1.2-2' }}</td>
         <td class="text-nowrap no-export">
           <button class="btn btn-primary btn-sm me-1" routerLink="/detalle-pedidos" [queryParams]="{ pedido: User.id_pedido }">Detalle</button>

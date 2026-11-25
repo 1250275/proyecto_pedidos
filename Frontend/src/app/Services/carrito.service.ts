@@ -12,7 +12,7 @@ export interface ItemCarrito {
 interface EstadoCarrito {
   items: ItemCarrito[];
   dni_cliente: string | null;
-  id_gaveta: number | null;
+  id_caja: number | null;
 }
 
 @Injectable({
@@ -21,7 +21,7 @@ interface EstadoCarrito {
 export class CarritoService {
   items: ItemCarrito[] = [];
   dni_cliente: string | null = null;
-  id_gaveta: number | null = null;
+  id_caja: number | null = null;
   private clave = '';
 
   constructor(private auth: AuthService) {}
@@ -32,7 +32,7 @@ export class CarritoService {
       const guardado: EstadoCarrito = JSON.parse(localStorage.getItem(this.clave) || 'null');
       this.items = guardado?.items ?? [];
       this.dni_cliente = guardado?.dni_cliente ?? null;
-      this.id_gaveta = guardado?.id_gaveta ?? null;
+      this.id_caja = guardado?.id_caja ?? null;
     } catch {
       this.items = [];
     }
@@ -40,7 +40,7 @@ export class CarritoService {
 
   guardar() {
     try {
-      const estado: EstadoCarrito = { items: this.items, dni_cliente: this.dni_cliente, id_gaveta: this.id_gaveta };
+      const estado: EstadoCarrito = { items: this.items, dni_cliente: this.dni_cliente, id_caja: this.id_caja };
       localStorage.setItem(this.clave, JSON.stringify(estado));
     } catch {}
   }

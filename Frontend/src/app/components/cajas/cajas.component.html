@@ -16,7 +16,7 @@
   </div>
 </div>
 
-<app-barra-tabla [(filtro)]="filterPost" titulo="Gavetas"></app-barra-tabla>
+<app-barra-tabla [(filtro)]="filterPost" titulo="Cajas"></app-barra-tabla>
 
 <div class="table-responsive">
   <table class="table table-bordered table-hover" id="tabla">
@@ -32,8 +32,8 @@
         <td>{{ User.id_caja }}</td>
         <td>L {{ User.monto_dinero | number: '1.2-2' }}</td>
         <td *ngIf="puedeEscribir" class="text-nowrap no-export">
-          <button class="btn btn-success btn-sm me-1" [routerLink]="['/gavetas/edit', User.id_gaveta]">Actualizar</button>
-          <button *ngIf="esAdmin" class="btn btn-warning btn-sm" (click)="EliminarData(User.id_gaveta)">Eliminar</button>
+          <button class="btn btn-success btn-sm me-1" [routerLink]="['/cajas/edit', User.id_caja]">Actualizar</button>
+          <button *ngIf="esAdmin" class="btn btn-warning btn-sm" (click)="EliminarData(User.id_caja)">Eliminar</button>
         </td>
       </tr>
       <tr *ngIf="filtrados.length === 0">

@@ -14,8 +14,8 @@ export interface Login {
   contrasena: string | null;
 }
 
-export interface gaveta {
-  id_gaveta?: number | null;
+export interface caja {
+  id_caja?: number | null;
   monto_dinero?: number | null;
 }
 
@@ -66,7 +66,7 @@ export interface pedido {
   fecha_hora?: string | null;
   dni_cliente?: string | null;
   id_empleado?: number | null;
-  id_gaveta?: number | null;
+  id_caja?: number | null;
 }
 
 export interface comprobante {

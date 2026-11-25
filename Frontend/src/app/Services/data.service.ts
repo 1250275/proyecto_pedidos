@@ -43,7 +43,7 @@ export class DataService {
     return this.http.get<any[]>(this.API_URI + '/employees');
   }
 
-  getDropListGavetas(): Observable<any[]> {
+  getDropListCajas(): Observable<any[]> {
     return this.http.get<any[]>(this.API_URI + '/drawers');
   }
 

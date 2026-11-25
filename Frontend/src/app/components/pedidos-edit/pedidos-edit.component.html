@@ -31,12 +31,12 @@
           <div class="invalid-feedback">Seleccione el empleado</div>
         </div>
         <div class="col-md-4 form-group">
-          <label for="id_gaveta" class="form-label">Gaveta</label>
-          <select id="id_gaveta" class="form-select" [(ngModel)]="user.id_gaveta" name="id_gaveta" required>
-            <option *ngFor="let lista of Gavetalist" [ngValue]="lista.id_gaveta">Gaveta {{ lista.id_gaveta }}</option>
+          <label for="id_caja" class="form-label">Caja</label>
+          <select id="id_caja" class="form-select" [(ngModel)]="user.id_caja" name="id_caja" required>
+            <option *ngFor="let lista of Cajalist" [ngValue]="lista.id_caja">Caja {{ lista.id_caja }}</option>
           </select>
-          <div class="invalid-feedback">Seleccione la gaveta</div>
-          <div class="form-text">Si cambia la gaveta, el total del pedido pasa a la nueva gaveta.</div>
+          <div class="invalid-feedback">Seleccione la caja</div>
+          <div class="form-text">Si cambia la caja, el total del pedido pasa a la nueva caja.</div>
         </div>
       </div>
       <button type="submit" class="btn btn-success mt-3 me-2">Actualizar</button>

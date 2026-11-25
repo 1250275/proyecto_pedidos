@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { InicioComponent } from './components/inicio/inicio.component';
-import { GavetasComponent } from './components/cajas/cajas.component';
-import { GavetasEditComponent } from './components/gavetas-edit/gavetas-edit.component';
+import { CajasComponent } from './components/cajas/cajas.component';
+import { CajasEditComponent } from './components/cajas-edit/cajas-edit.component';
 import { EmpleadosComponent } from './components/empleados/empleados.component';
 import { EmpleadosEditComponent } from './components/empleados-edit/empleados-edit.component';
 import { ClientesComponent } from './components/clientes/clientes.component';
@@ -36,8 +36,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [loginGuard] },
   { path: 'inicio', component: InicioComponent, canActivate: [authGuard] },
 
-  { path: 'gavetas', component: GavetasComponent, canActivate: [authGuard] },
-  { path: 'gavetas/edit/:id', component: GavetasEditComponent, canActivate: [authGuard], data: { roles: soloAdmin } },
+  { path: 'cajas', component: CajasComponent, canActivate: [authGuard] },
+  { path: 'cajas/edit/:id', component: CajasEditComponent, canActivate: [authGuard], data: { roles: soloAdmin } },
   { path: 'empleados', component: EmpleadosComponent, canActivate: [authGuard] },
   { path: 'empleados/edit/:id', component: EmpleadosEditComponent, canActivate: [authGuard], data: { roles: soloAdmin } },
   { path: 'clientes', component: ClientesComponent, canActivate: [authGuard] },

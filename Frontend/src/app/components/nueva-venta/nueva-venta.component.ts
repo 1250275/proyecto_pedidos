@@ -14,7 +14,7 @@ import { FiltroPipe } from '../../pipes/filtro.pipe';
 export class NuevaVentaComponent implements OnInit {
   Productolist: any = [];
   Clientelist: any = [];
-  Gavetalist: any = [];
+  Cajalist: any = [];
   categorias: string[] = [];
   filterPost = '';
   categoria = '';
@@ -39,7 +39,7 @@ export class NuevaVentaComponent implements OnInit {
       const c = data.find((x: any) => x.dni_cliente === this.carrito.dni_cliente);
       this.clienteTexto = c ? this.etiquetaCliente(c) : '';
     });
-    this.Data.getDropListGavetas().subscribe((data: any) => (this.Gavetalist = data));
+    this.Data.getDropListCajas().subscribe((data: any) => (this.Cajalist = data));
   }
 
   getProductos() {
@@ -71,7 +71,7 @@ export class NuevaVentaComponent implements OnInit {
     this.carrito.guardar();
   }
 
-  elegirGaveta() {
+  elegirCaja() {
     this.carrito.guardar();
   }
 
@@ -91,13 +91,13 @@ export class NuevaVentaComponent implements OnInit {
   ConfirmarVenta() {
     if (this.carrito.items.length === 0) return alert('El carrito está vacío');
     if (!this.carrito.dni_cliente) return alert('Seleccione el cliente de la lista');
-    if (!this.carrito.id_gaveta) return alert('Seleccione la gaveta');
+    if (!this.carrito.id_caja) return alert('Seleccione la caja');
     if (this.cambio != null && this.cambio < 0) return alert('El efectivo recibido no alcanza para el total');
     if (!confirm('¿Confirmar la venta por L ' + this.carrito.total.toFixed(2) + '?')) return;
 
     const datos = {
       dni_cliente: this.carrito.dni_cliente,
-      id_gaveta: this.carrito.id_gaveta,
+      id_caja: this.carrito.id_caja,
       productos: this.carrito.items.map((i) => ({ id_producto: i.id_producto, cantidad: i.cantidad })),
     };
     this.procesando = true;

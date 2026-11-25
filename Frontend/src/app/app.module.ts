@@ -17,8 +17,8 @@ import { LoginComponent } from './components/login/login.component';
 import { InicioComponent } from './components/inicio/inicio.component';
 import { NavegacionComponent } from './components/navegacion/navegacion.component';
 import { credentialsInterceptor } from './interceptors/credentials.interceptor';
-import { GavetasComponent } from './components/cajas/cajas.component';
-import { GavetasEditComponent } from './components/gavetas-edit/gavetas-edit.component';
+import { CajasComponent } from './components/cajas/cajas.component';
+import { CajasEditComponent } from './components/cajas-edit/cajas-edit.component';
 import { EmpleadosComponent } from './components/empleados/empleados.component';
 import { EmpleadosEditComponent } from './components/empleados-edit/empleados-edit.component';
 import { ClientesComponent } from './components/clientes/clientes.component';
@@ -49,8 +49,8 @@ import { NuevaVentaComponent } from './components/nueva-venta/nueva-venta.compon
     LoginComponent,
     InicioComponent,
     NavegacionComponent,
-    GavetasComponent,
-    GavetasEditComponent,
+    CajasComponent,
+    CajasEditComponent,
     EmpleadosComponent,
     EmpleadosEditComponent,
     ClientesComponent,

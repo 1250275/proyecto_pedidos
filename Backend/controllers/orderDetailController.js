@@ -46,7 +46,7 @@ controller.edit = (req, res) => {
     });
 };
 
-// Insertar un registro: descuenta el stock y recalcula el total del pedido y su gaveta
+// Insertar un registro: descuenta el stock y recalcula el total del pedido y su caja
 controller.save = (req, res) => {
     const { id_pedido, id_producto, cantidad } = req.body;
     if (!id_pedido || !id_producto || !isPositiveInteger(cantidad)) {
@@ -95,7 +95,7 @@ controller.update = (req, res) => {
     });
 };
 
-// Eliminar un registro: devuelve el stock y recalcula el total del pedido y su gaveta
+// Eliminar un registro: devuelve el stock y recalcula el total del pedido y su caja
 controller.delete = (req, res) => {
     const { orderId, productId } = req.params;
 

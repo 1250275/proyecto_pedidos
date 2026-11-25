@@ -13,7 +13,7 @@ router.use(authenticate);
 const canWrite = authorize(ROLES.ADMIN);
 const canDelete = authorize(ROLES.ADMIN);
 
-// Rutas de la tabla gaveta
+// Rutas de la tabla caja
 router.get('/', drawerController.list);                       // listar todos (todos los roles)
 router.post('/', canWrite, drawerController.save);            // insertar
 router.delete('/:id', canDelete, drawerController.delete);    // eliminar por id

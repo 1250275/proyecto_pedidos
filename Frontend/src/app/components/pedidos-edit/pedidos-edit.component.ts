@@ -17,18 +17,18 @@ export class PedidosEditComponent implements OnInit {
     fecha_hora: null,
     dni_cliente: null,
     id_empleado: null,
-    id_gaveta: null,
+    id_caja: null,
   };
   Clientelist: any = [];
   Empleadolist: any = [];
-  Gavetalist: any = [];
+  Cajalist: any = [];
 
   constructor(private Data: DataService, private router: Router, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.Data.getDropListClientes().subscribe((data: any) => (this.Clientelist = data));
     this.Data.getDropListEmpleados().subscribe((data: any) => (this.Empleadolist = data));
-    this.Data.getDropListGavetas().subscribe((data: any) => (this.Gavetalist = data));
+    this.Data.getDropListCajas().subscribe((data: any) => (this.Cajalist = data));
 
     const params = this.activatedRoute.snapshot.params;
     if (params['id']) {
@@ -47,7 +47,7 @@ export class PedidosEditComponent implements OnInit {
     const cambios = {
       dni_cliente: this.user.dni_cliente,
       id_empleado: this.user.id_empleado,
-      id_gaveta: this.user.id_gaveta,
+      id_caja: this.user.id_caja,
     };
     this.Data.update(this.user.id_pedido!, cambios, '/orders').subscribe({
       next: () => {

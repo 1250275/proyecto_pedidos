@@ -45,7 +45,7 @@ export const MENU: GrupoMenu[] = [
     titulo: 'Administración',
     opciones: [
       { titulo: 'Empleados', ruta: '/empleados', escribir: [ROLES.ADMIN] },
-      { titulo: 'Gavetas', ruta: '/gavetas', escribir: [ROLES.ADMIN] },
+      { titulo: 'Cajas', ruta: '/cajas', escribir: [ROLES.ADMIN] },
       { titulo: 'Usuarios', ruta: '/usuarios', escribir: [ROLES.ADMIN], ver: [ROLES.ADMIN] },
     ],
   },

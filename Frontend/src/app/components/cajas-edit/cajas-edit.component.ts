@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { gaveta } from '../../Interfaces/user';
+import { caja } from '../../Interfaces/user';
 import { DataService } from '../../Services/data.service';
 
 @Component({
-  selector: 'app-gavetas-edit',
+  selector: 'app-cajas-edit',
   standalone: false,
-  templateUrl: './gavetas-edit.component.html',
-  styleUrl: './gavetas-edit.component.css',
+  templateUrl: './cajas-edit.component.html',
+  styleUrl: './cajas-edit.component.css',
 })
-export class GavetasEditComponent implements OnInit {
-  user: gaveta = {
-    id_gaveta: null,
+export class CajasEditComponent implements OnInit {
+  user: caja = {
+    id_caja: null,
     monto_dinero: null,
   };
 
@@ -25,7 +25,7 @@ export class GavetasEditComponent implements OnInit {
         next: (res) => (this.user = res),
         error: (err) => {
           alert(err);
-          this.router.navigate(['/gavetas']);
+          this.router.navigate(['/cajas']);
         },
       });
     }
@@ -33,10 +33,10 @@ export class GavetasEditComponent implements OnInit {
 
   updateUser(f: NgForm) {
     if (f.invalid) return;
-    this.Data.update(this.user.id_gaveta!, this.user, '/drawers').subscribe({
+    this.Data.update(this.user.id_caja!, this.user, '/drawers').subscribe({
       next: () => {
         alert('Registro Actualizado');
-        this.router.navigate(['/gavetas']);
+        this.router.navigate(['/cajas']);
       },
       error: (err) => alert(err),
     });

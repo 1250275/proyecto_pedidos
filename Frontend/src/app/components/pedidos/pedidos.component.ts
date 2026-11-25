@@ -16,7 +16,7 @@ export class PedidosComponent implements OnInit {
   user: pedido = {};
   Clientelist: any = [];
   Empleadolist: any = [];
-  Gavetalist: any = [];
+  Cajalist: any = [];
   puedeEscribir = false;
   esAdmin = false;
 
@@ -35,14 +35,14 @@ export class PedidosComponent implements OnInit {
       id_pedido: null,
       dni_cliente: null,
       id_empleado: this.auth.usuario?.id_empleado ?? null,
-      id_gaveta: null,
+      id_caja: null,
     };
   }
 
   getDropLists() {
     this.Data.getDropListClientes().subscribe((data: any) => (this.Clientelist = data));
     this.Data.getDropListEmpleados().subscribe((data: any) => (this.Empleadolist = data));
-    this.Data.getDropListGavetas().subscribe((data: any) => (this.Gavetalist = data));
+    this.Data.getDropListCajas().subscribe((data: any) => (this.Cajalist = data));
   }
 
   getUser() {
@@ -79,7 +79,7 @@ export class PedidosComponent implements OnInit {
   }
 
   EliminarData(id: number) {
-    if (!confirm('¿Desea eliminar el pedido No. ' + id + '? Se devolverá el stock de sus productos y su total se restará de la gaveta.')) return;
+    if (!confirm('¿Desea eliminar el pedido No. ' + id + '? Se devolverá el stock de sus productos y su total se restará de la caja.')) return;
     this.Data.delete(id, '/orders').subscribe({
       next: () => {
         alert('Registro Eliminado');

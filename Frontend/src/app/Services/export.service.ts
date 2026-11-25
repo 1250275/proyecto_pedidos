@@ -105,7 +105,7 @@ export class ExportService {
     fila('Cliente', venta.cliente);
     fila('DNI', venta.dni_cliente);
     fila('Atendió', venta.cajero.trim());
-    fila('Gaveta', String(venta.id_gaveta));
+    fila('Caja', String(venta.id_caja));
     y += 1;
     linea();
 

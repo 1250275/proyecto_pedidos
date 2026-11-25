@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { gaveta } from '../../Interfaces/user';
+import { caja } from '../../Interfaces/user';
 import { DataService } from '../../Services/data.service';
 import { AuthService } from '../../Services/auth.service';
 
@@ -10,11 +10,11 @@ import { AuthService } from '../../Services/auth.service';
   templateUrl: './cajas.component.html',
   styleUrl: './cajas.component.css',
 })
-export class GavetasComponent implements OnInit {
+export class CajasComponent implements OnInit {
   TUser: any = [];
   filterPost = '';
-  user: gaveta = {
-    id_gaveta: null,
+  user: caja = {
+    id_caja: null,
     monto_dinero: null,
   };
   puedeEscribir = false;
@@ -37,7 +37,7 @@ export class GavetasComponent implements OnInit {
 
   AgregarValor(f: NgForm) {
     if (f.invalid) return;
-    delete this.user.id_gaveta;
+    delete this.user.id_caja;
     this.Data.save(this.user, '/drawers').subscribe({
       next: () => {
         alert('Registro Almacenado');
