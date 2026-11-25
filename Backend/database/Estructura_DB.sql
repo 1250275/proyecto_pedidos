@@ -11,13 +11,13 @@ USE bd_tienda;
 SET NAMES utf8mb4;
 
 -- ---------------------------------------------------------------------
--- 1. GAVETA (caja registradora)
+-- 1. CAJA (caja registradora)
 -- ---------------------------------------------------------------------
-CREATE TABLE gaveta (
-    id_gaveta       INT UNSIGNED    NOT NULL AUTO_INCREMENT,
+CREATE TABLE caja (
+    id_caja       INT UNSIGNED    NOT NULL AUTO_INCREMENT,
     monto_dinero    DECIMAL(12,2)   NOT NULL DEFAULT 0.00,
-    CONSTRAINT pk_gaveta PRIMARY KEY (id_gaveta),
-    CONSTRAINT chk_gaveta_monto CHECK (monto_dinero >= 0)
+    CONSTRAINT pk_caja PRIMARY KEY (id_caja),
+    CONSTRAINT chk_caja_monto CHECK (monto_dinero >= 0)
 ) ENGINE = InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -89,7 +89,7 @@ CREATE TABLE proveedor (
 
 -- ---------------------------------------------------------------------
 -- 6. PEDIDO
---    Cliente 1 ── N Pedido | Empleado 1 ── N Pedido | Gaveta 1 ── N Pedido
+--    Cliente 1 ── N Pedido | Empleado 1 ── N Pedido | Caja 1 ── N Pedido
 -- ---------------------------------------------------------------------
 CREATE TABLE pedido (
     id_pedido       INT UNSIGNED    NOT NULL AUTO_INCREMENT,
@@ -97,7 +97,7 @@ CREATE TABLE pedido (
     fecha_hora      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dni_cliente     VARCHAR(15)     NOT NULL,
     id_empleado     INT UNSIGNED    NOT NULL,
-    id_gaveta       INT UNSIGNED    NOT NULL,
+    id_caja       INT UNSIGNED    NOT NULL,
     CONSTRAINT pk_pedido PRIMARY KEY (id_pedido),
     CONSTRAINT chk_pedido_total CHECK (total >= 0),
     CONSTRAINT fk_pedido_cliente FOREIGN KEY (dni_cliente)
@@ -106,8 +106,8 @@ CREATE TABLE pedido (
     CONSTRAINT fk_pedido_empleado FOREIGN KEY (id_empleado)
         REFERENCES empleado (id_empleado)
         ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_pedido_gaveta FOREIGN KEY (id_gaveta)
-        REFERENCES gaveta (id_gaveta)
+    CONSTRAINT fk_pedido_caja FOREIGN KEY (id_caja)
+        REFERENCES caja (id_caja)
         ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE = InnoDB;
 

@@ -9,9 +9,9 @@ SET NAMES utf8mb4;
 START TRANSACTION;
 
 -- ---------------------------------------------------------------------
--- Gavetas (monto = fondo inicial L. 1,000 + ventas registradas)
+-- Cajas (monto = fondo inicial L. 1,000 + ventas registradas)
 -- ---------------------------------------------------------------------
-INSERT INTO gaveta (id_gaveta, monto_dinero) VALUES
+INSERT INTO caja (id_caja, monto_dinero) VALUES
 (1, 2648.00),
 (2, 2181.00),
 (3, 1794.00);
@@ -62,7 +62,7 @@ INSERT INTO producto (id_producto, nombre, marca, categoria, precio_compra, prec
 (10, 'Pasta Dental 100 ml', 'Dentiblanc', 'Higiene', 32.00, 45.00, 70, 12, 'Pasta dental con flúor');
 
 -- Pedidos (total = suma de sus sub_total)
-INSERT INTO pedido (id_pedido, total, fecha_hora, dni_cliente, id_empleado, id_gaveta) VALUES
+INSERT INTO pedido (id_pedido, total, fecha_hora, dni_cliente, id_empleado, id_caja) VALUES
 (1, 498.00, '2026-11-02 08:15:00', '0801199012345', 2, 1),
 (2, 213.00, '2026-11-02 09:40:00', '0501198567890', 2, 1),
 (3, 290.00, '2026-11-03 10:05:00', '0801200011223', 3, 2),
